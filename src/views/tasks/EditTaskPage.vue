@@ -1,15 +1,19 @@
 <template>
-  <div class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <p class="text-2xs tracking-[0.24em] text-slate-500">Edit task</p>
-        <h1 class="mt-3 text-4xl font-extrabold tracking-tight text-white">Edit issue</h1>
-      </div>
+  <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+    <div class="mb-8">
       <router-link
         to="/"
-        class="rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-slate-800"
+        class="group inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-white transition-all"
       >
-        Back to board
+        <svg
+          class="h-4 w-4 stroke-2 group-hover:-translate-x-0.5 transition-transform"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Go back
       </router-link>
     </div>
 

@@ -1,14 +1,16 @@
 <template>
   <span
     :class="badgeClasses"
-    class="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em]"
+    class="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] flex items-center gap-1"
   >
-    {{ priority }}
+    <span>{{ priorityIcon }}</span>
+    <span>{{ priority }}</span>
   </span>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { priorityMeta } from '../../data/statuses.js'
 
 const props = defineProps({
   priority: {
@@ -16,6 +18,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const priorityIcon = computed(() => priorityMeta[props.priority]?.icon || '')
 
 const badgeClasses = computed(() => {
   const priorityColors = {
