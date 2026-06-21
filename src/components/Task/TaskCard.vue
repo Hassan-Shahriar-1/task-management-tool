@@ -61,7 +61,7 @@
 <script setup>
 import { computed } from 'vue'
 import dayjs from 'dayjs'
-import IconCalendar from './icons/IconCalendar.vue'
+import IconCalendar from '../icons/IconCalendar.vue'
 import PriorityBadge from './PriorityBadge.vue'
 
 const props = defineProps({

@@ -175,7 +175,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { statuses as defaultStatuses, taskTypes as defaultTaskTypes } from '../data/statuses.js'
+import { statuses as defaultStatuses, taskTypes as defaultTaskTypes } from '../../data/statuses.js'
 import useVuelidate from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
 

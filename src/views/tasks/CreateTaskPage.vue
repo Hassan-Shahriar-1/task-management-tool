@@ -63,7 +63,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import CreateTaskForm from '../../components/CreateTaskForm.vue'
+import CreateTaskForm from '../../components/Task/CreateTaskPage.vue'
 import { useTasks } from '../../composables/useTasks.js'
 import { projects } from '../../data/projects.js'
 import { users } from '../../data/users.js'

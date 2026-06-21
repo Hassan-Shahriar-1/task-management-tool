@@ -140,8 +140,8 @@ import { useTasks } from '../composables/useTasks.js'
 import { statuses, statusMeta, priorityMeta, taskTypes } from '../data/statuses.js'
 import { projects } from '../data/projects.js'
 import { users } from '../data/users.js'
-import TaskCard from '../components/TaskCard.vue'
-import CreateTaskModal from '../components/CreateTaskModal.vue'
+import TaskCard from '../components/Task/TaskCard.vue'
+import CreateTaskModal from '../components/Task/CreateTaskModal.vue'
 
 const { groupedTasks, addTask } = useTasks()
 
