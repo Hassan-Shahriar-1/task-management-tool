@@ -11,7 +11,12 @@
         <div>
           <p class="text-2xs uppercase tracking-[0.24em] text-slate-500">Task details</p>
           <h2 class="mt-2 text-3xl font-bold text-white">{{ task.title }}</h2>
-          <p class="mt-1 text-sm text-slate-400">{{ task.id }} • {{ task.type || 'Task' }}</p>
+          <p class="mt-1 text-sm text-slate-400 flex items-center gap-2">
+            <span>{{ task.id }}</span>
+            <span>•</span>
+            <span class="text-lg">{{ taskTypeMeta[task.type || 'Task']?.icon || '✓' }}</span>
+            <span>{{ task.type || 'Task' }}</span>
+          </p>
         </div>
 
         <div class="flex items-center gap-3">
@@ -72,8 +77,14 @@
           </div>
           <div class="rounded-3xl border border-slate-800 bg-slate-900 p-5">
             <p class="text-2xs uppercase tracking-[0.24em] text-slate-500">Type</p>
-            <div class="mt-3 rounded-2xl bg-slate-950 p-4 text-sm font-semibold text-white">
-              {{ task.type || 'Task' }}
+            <div
+              class="mt-3 rounded-2xl p-4 text-sm font-semibold flex items-center gap-2"
+              :class="taskTypeMeta[task.type || 'Task']?.bg || 'bg-slate-950'"
+            >
+              <span class="text-xl">{{ taskTypeMeta[task.type || 'Task']?.icon || '✓' }}</span>
+              <span :class="taskTypeMeta[task.type || 'Task']?.color || 'text-white'">
+                {{ task.type || 'Task' }}
+              </span>
             </div>
           </div>
           <div class="rounded-3xl border border-slate-800 bg-slate-900 p-5">
@@ -100,6 +111,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { taskTypeMeta } from '../../data/statuses.js'
 
 const props = defineProps({
   task: { type: Object, required: true },

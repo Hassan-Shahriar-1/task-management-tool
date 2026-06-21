@@ -2,7 +2,7 @@
   <div class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
     <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p class="text-2xs uppercase tracking-[0.24em] text-slate-500">Edit task</p>
+        <p class="text-2xs tracking-[0.24em] text-slate-500">Edit task</p>
         <h1 class="mt-3 text-4xl font-extrabold tracking-tight text-white">Edit issue</h1>
       </div>
       <router-link

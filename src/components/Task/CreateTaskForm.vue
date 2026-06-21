@@ -72,11 +72,11 @@
     </div>
 
     <div>
-      <label class="text-2xs uppercase tracking-[0.24em] text-slate-500">Summary</label>
+      <label class="text-2xs tracking-[0.24em] text-slate-500">Title</label>
       <input
         v-model="title"
         required
-        placeholder="Add issue summary here"
+        placeholder="Add issue title here"
         class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm text-white border border-slate-800 focus:border-blue-500 focus:ring-blue-500/25"
       />
       <div v-if="v$.title.$error" class="mt-2 text-2xs text-rose-400">

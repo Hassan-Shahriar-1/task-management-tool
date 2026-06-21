@@ -20,4 +20,11 @@ export const priorityMeta = {
 
 export const taskTypes = ['Task', 'Bug', 'Feature', 'Improvement']
 
-export default { statuses, statusMeta, priorityMeta, taskTypes }
+export const taskTypeMeta = {
+  Task: { icon: '✓', color: 'text-blue-400', bg: 'bg-blue-500/10' },
+  Bug: { icon: '🐛', color: 'text-rose-400', bg: 'bg-rose-500/10' },
+  Feature: { icon: '⭐', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  Improvement: { icon: '📈', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+}
+
+export default { statuses, statusMeta, priorityMeta, taskTypes, taskTypeMeta }
