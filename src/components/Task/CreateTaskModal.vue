@@ -3,25 +3,27 @@
     <div class="absolute inset-0 bg-black/60" @click="close"></div>
 
     <div
-      class="relative w-full max-w-4xl overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl"
+      class="relative w-full max-w-4xl max-h-[calc(100vh-4rem)] flex flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl"
     >
       <div
-        class="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-6 py-5"
+        class="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-6 py-3.5 flex-shrink-0"
       >
         <div>
-          <p class="text-2xs uppercase tracking-[0.24em] text-slate-500">Create task</p>
-          <h2 class="mt-2 text-3xl font-bold text-white">New issue</h2>
+          <h2 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></span>
+            Create Task
+          </h2>
         </div>
         <button
           type="button"
-          class="rounded-2xl border border-slate-800 bg-slate-950 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-900"
+          class="rounded-xl border border-slate-850 bg-slate-950 px-3.5 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-900 hover:text-white transition-all cursor-pointer"
           @click="close"
         >
           Close
         </button>
       </div>
 
-      <div class="p-6">
+      <div class="p-6 overflow-y-auto flex-grow">
         <CreateTaskForm
           :status="status"
           :project-id="projectId"

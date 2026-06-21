@@ -1,111 +1,133 @@
 <template>
   <form
     @submit.prevent="submit"
-    class="space-y-6 rounded-[32px] border border-slate-800 bg-slate-950 p-6 shadow-xl shadow-slate-950/30"
+    class="space-y-8"
   >
-    <div class="grid gap-4 sm:grid-cols-2">
-      <div>
-        <label class="text-2xs uppercase tracking-[0.24em] text-slate-500">Project</label>
-        <select
-          v-model.number="projectId"
-          class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm text-white border border-slate-800 focus:border-blue-500 focus:ring-blue-500/25"
-        >
-          <option v-for="projectItem in projects" :key="projectItem.id" :value="projectItem.id">
-            {{ projectItem.name }}
-          </option>
-        </select>
+    <div class="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-8 items-start">
+      <!-- Left Column: Primary Content -->
+      <div class="space-y-6">
+        <div>
+          <label class="text-[10px] uppercase tracking-[0.2em] text-slate-450 font-semibold">Title</label>
+          <input
+            v-model="title"
+            required
+            placeholder="Add issue title here"
+            class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3.5 text-lg font-semibold text-white placeholder-slate-700 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 transition-all"
+          />
+          <div v-if="v$.title.$error" class="mt-2 text-2xs text-rose-400">
+            <div v-if="v$.title.required?.$invalid">Summary is required</div>
+            <div v-if="v$.title.minLength?.$invalid">Summary must be at least 3 characters</div>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[10px] uppercase tracking-[0.2em] text-slate-450 font-semibold">Description</label>
+          <textarea
+            v-model="description"
+            rows="12"
+            placeholder="Add issue description here..."
+            class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3.5 text-sm text-slate-350 placeholder-slate-700 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 transition-all resize-none leading-relaxed"
+          ></textarea>
+        </div>
       </div>
 
-      <div>
-        <label class="text-2xs uppercase tracking-[0.24em] text-slate-500">Issue type</label>
-        <select
-          v-model="taskType"
-          class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm text-white border border-slate-800 focus:border-blue-500 focus:ring-blue-500/25"
-        >
-          <option v-for="t in taskTypes" :key="t" :value="t">{{ t }}</option>
-        </select>
-      </div>
+      <!-- Right Column: Sidebar (Glassmorphism card) -->
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/25 backdrop-blur-md p-6 space-y-6">
+        <h3 class="text-2xs font-bold uppercase tracking-wider text-slate-400 pb-2 border-b border-slate-800/60">Attributes</h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Project</label>
+            <select
+              v-model.number="projectId"
+              class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
+            >
+              <option v-for="projectItem in projects" :key="projectItem.id" :value="projectItem.id">
+                {{ projectItem.name }}
+              </option>
+            </select>
+          </div>
 
-      <div>
-        <label class="text-2xs uppercase tracking-[0.24em] text-slate-500">Reporter</label>
-        <select
-          v-model.number="reporterId"
-          class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm text-white border border-slate-800 focus:border-blue-500 focus:ring-blue-500/25"
-        >
-          <option :value="null">Select reporter</option>
-          <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name }}</option>
-        </select>
-      </div>
+          <div>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Issue type</label>
+            <select
+              v-model="taskType"
+              class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
+            >
+              <option v-for="t in taskTypes" :key="t" :value="t">
+                {{ taskTypeMeta[t]?.icon }} &nbsp; {{ t }}
+              </option>
+            </select>
+          </div>
 
-      <div>
-        <label class="text-2xs uppercase tracking-[0.24em] text-slate-500">Assignee</label>
-        <select
-          v-model.number="assigneeId"
-          class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm text-white border border-slate-800 focus:border-blue-500 focus:ring-blue-500/25"
-        >
-          <option :value="null">Unassigned</option>
-          <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name }}</option>
-        </select>
+          <div>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Reporter</label>
+            <select
+              v-model.number="reporterId"
+              class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
+            >
+              <option :value="null">Select reporter</option>
+              <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name }}</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Assignee</label>
+            <select
+              v-model.number="assigneeId"
+              class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
+            >
+              <option :value="null">Unassigned</option>
+              <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name }}</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Status</label>
+            <select
+              v-model="status"
+              class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
+            >
+              <option v-for="s in statuses" :key="s" :value="s">{{ s }}</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Priority</label>
+            <select
+              v-model="priority"
+              class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
+            >
+              <option v-for="p in priorities" :key="p" :value="p">
+                {{ priorityMeta[p]?.icon }} &nbsp; {{ p }}
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Due date</label>
+            <input
+              type="date"
+              v-model="dueDate"
+              class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all [color-scheme:dark]"
+            />
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2">
-      <div>
-        <label class="text-2xs uppercase tracking-[0.24em] text-slate-500">Status</label>
-        <select
-          v-model="status"
-          class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm text-white border border-slate-800 focus:border-blue-500 focus:ring-blue-500/25"
-        >
-          <option v-for="s in statuses" :key="s" :value="s">{{ s }}</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="text-2xs uppercase tracking-[0.24em] text-slate-500">Priority</label>
-        <select
-          v-model="priority"
-          class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm text-white border border-slate-800 focus:border-blue-500 focus:ring-blue-500/25"
-        >
-          <option v-for="p in priorities" :key="p" :value="p">{{ p }}</option>
-        </select>
-      </div>
-    </div>
-
-    <div>
-      <label class="text-2xs tracking-[0.24em] text-slate-500">Title</label>
-      <input
-        v-model="title"
-        required
-        placeholder="Add issue title here"
-        class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm text-white border border-slate-800 focus:border-blue-500 focus:ring-blue-500/25"
-      />
-      <div v-if="v$.title.$error" class="mt-2 text-2xs text-rose-400">
-        <div v-if="v$.title.required?.$invalid">Summary is required</div>
-        <div v-if="v$.title.minLength?.$invalid">Summary must be at least 3 characters</div>
-      </div>
-    </div>
-
-    <div>
-      <label class="text-2xs uppercase tracking-[0.24em] text-slate-500">Description</label>
-      <textarea
-        v-model="description"
-        rows="8"
-        placeholder="Add issue description here"
-        class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm text-white border border-slate-800 focus:border-blue-500 focus:ring-blue-500/25"
-      ></textarea>
-    </div>
-
-    <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+    <!-- Actions Footer -->
+    <div class="flex flex-col gap-3 sm:flex-row sm:justify-end pt-6 border-t border-slate-900/60">
       <button
         type="button"
-        class="rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm font-semibold text-slate-300 hover:bg-slate-900"
+        class="rounded-xl border border-slate-800 bg-transparent px-5 py-2.5 text-xs font-medium text-slate-400 hover:bg-slate-900 hover:text-white transition-all cursor-pointer"
         @click="close"
       >
         Cancel
       </button>
       <button
         type="submit"
-        class="rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-400"
+        class="rounded-xl bg-indigo-600 hover:bg-indigo-500 px-5 py-2.5 text-xs font-medium text-white shadow-md shadow-indigo-600/10 transition-all cursor-pointer"
       >
         {{ submitButtonLabel }}
       </button>
@@ -115,9 +137,10 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { statuses as defaultStatuses, taskTypes as defaultTaskTypes } from '../../data/statuses.js'
+import { statuses as defaultStatuses, taskTypes as defaultTaskTypes, taskTypeMeta, priorityMeta } from '../../data/statuses.js'
 import useVuelidate from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
+import dayjs from 'dayjs'
 
 const props = defineProps({
   task: { type: Object, default: null },
@@ -158,6 +181,9 @@ const reporterId = ref(
     : null,
 )
 const tags = ref(props.task?.tags ? [...props.task.tags] : [])
+const dueDate = ref(
+  props.task?.due_date ? dayjs(props.task.due_date).format('YYYY-MM-DD') : ''
+)
 
 const statuses = computed(() => props.statuses)
 const isEdit = computed(() => !!props.task)
@@ -187,6 +213,7 @@ watch(
       ? (props.users.find((u) => u.name === task.reporter.name)?.id ?? null)
       : null
     tags.value = task.tags ? [...task.tags] : []
+    dueDate.value = task.due_date ? dayjs(task.due_date).format('YYYY-MM-DD') : ''
   },
   { immediate: true },
 )
@@ -231,6 +258,7 @@ async function submit() {
     priority: priority.value,
     projectId: projectId.value,
     tags: tags.value.slice(),
+    due_date: dueDate.value || null,
     subtasksCompleted: props.task?.subtasksCompleted ?? 0,
     subtasksTotal: props.task?.subtasksTotal ?? 0,
     assignee: assignee
