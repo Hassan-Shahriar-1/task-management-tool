@@ -94,7 +94,12 @@
 
         <!-- Task Cards Area -->
         <div class="flex flex-col gap-3 min-h-[300px] mt-1">
-          <TaskCard v-for="task in groupedTasks[col]" :key="task.id" :task="task" />
+          <TaskCard
+            v-for="task in groupedTasks[col]"
+            :key="task.id"
+            :task="task"
+            @select="openDetails"
+          />
 
           <!-- Empty state indicator per column if zero tasks -->
           <div
@@ -131,6 +136,18 @@
       @close="closeModal"
       @create="handleCreateTask"
     />
+
+    <TaskDetailsModal
+      v-if="selectedTask"
+      :task="selectedTask"
+      :projects="projects"
+      :users="users"
+      :statuses="columns"
+      :task-types="taskTypes"
+      :priorities="Object.keys(priorityMeta)"
+      @close="closeDetailsModal"
+      @update="handleUpdateTask"
+    />
   </div>
 </template>
 
@@ -142,12 +159,14 @@ import { projects } from '../data/projects.js'
 import { users } from '../data/users.js'
 import TaskCard from '../components/Task/TaskCard.vue'
 import CreateTaskModal from '../components/Task/CreateTaskModal.vue'
+import TaskDetailsModal from '../components/Task/TaskDetailsModal.vue'
 
-const { groupedTasks, addTask } = useTasks()
+const { groupedTasks, addTask, updateTask } = useTasks()
 
 const showModal = ref(false)
 const selectedStatus = ref(null)
 const selectedProjectId = ref(null)
+const selectedTask = ref(null)
 
 function openModal(status, projectId) {
   selectedStatus.value = status
@@ -164,6 +183,19 @@ function closeModal() {
 function handleCreateTask(task) {
   addTask(task)
   closeModal()
+}
+
+function openDetails(task) {
+  selectedTask.value = task
+}
+
+function closeDetailsModal() {
+  selectedTask.value = null
+}
+
+function handleUpdateTask(task) {
+  updateTask(task)
+  selectedTask.value = { ...selectedTask.value, ...task }
 }
 
 // Columns config - imported from statuses

@@ -32,6 +32,11 @@ const router = createRouter({
       component: () => import('../views/tasks/CreateTaskPage.vue'),
     },
     {
+      path: '/tasks/:id/edit',
+      name: 'task-edit',
+      component: () => import('../views/tasks/EditTaskPage.vue'),
+    },
+    {
       path: '/create-task',
       redirect: '/tasks/create',
     },

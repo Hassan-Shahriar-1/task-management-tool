@@ -1,15 +1,23 @@
 <template>
-  <div class="flex flex-col gap-3 m-1">
+  <div class="flex flex-col gap-3 m-1 min-h-[22rem] max-h-[22rem]">
     <div
-      class="group flex flex-col rounded-xl border border-slate-900 bg-slate-950 p-4 shadow-sm hover:border-slate-800/80 hover:shadow-md hover:shadow-brand-950/10 cursor-grab active:cursor-grabbing hover:-translate-y-[2px] transition-all duration-300"
+      @click="selectTask"
+      class="group flex flex-col rounded-xl border border-slate-900 bg-slate-950 p-4 shadow-sm hover:border-slate-800/80 hover:shadow-md hover:shadow-brand-950/10 cursor-pointer hover:-translate-y-[2px] transition-all duration-300"
     >
-      <!-- Card Head: Task ID & Priority -->
-      <div class="flex items-center justify-between mb-2">
-        <span
-          class="text-2xs font-semibold text-slate-500 tracking-wider group-hover:text-slate-400 transition-colors"
-        >
-          {{ task.id }}
-        </span>
+      <!-- Card Head: Task ID, Type & Priority -->
+      <div class="flex items-center justify-between mb-2 gap-3">
+        <div class="flex items-center gap-2">
+          <span
+            class="text-2xs font-semibold text-slate-500 tracking-wider group-hover:text-slate-400 transition-colors"
+          >
+            {{ task.id }}
+          </span>
+          <span
+            class="rounded-full bg-slate-800 px-2 py-1 text-2xs uppercase tracking-[0.22em] text-slate-300"
+          >
+            {{ task.type || 'Task' }}
+          </span>
+        </div>
         <PriorityBadge :priority="task.priority" />
       </div>
 
@@ -70,6 +78,12 @@ const props = defineProps({
     required: true,
   },
 })
+
+const emit = defineEmits(['select'])
+
+function selectTask() {
+  emit('select', props.task)
+}
 
 const dueStatus = computed(() => {
   if (!props.task.due_date) return null
