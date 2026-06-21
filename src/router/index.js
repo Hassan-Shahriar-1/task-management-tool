@@ -26,13 +26,17 @@ const router = createRouter({
       name: 'about',
       component: () => import('../views/AboutView.vue'),
     },
+    {
+      path: '/create-task',
+      name: 'create-task',
+      component: () => import('../views/CreateTaskView.vue'),
+    },
     // Catch-all route to redirect back to home
     {
       path: '/:pathMatch(.*)*',
       redirect: '/',
-    }
+    },
   ],
 })
 
 export default router
-

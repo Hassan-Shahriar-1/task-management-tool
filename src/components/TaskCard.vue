@@ -30,13 +30,13 @@
         <span
           v-for="tag in task.tags"
           :key="tag"
-          class="rounded-md border border-slate-900 bg-slate-900/30 px-1.5 py-0.5 text-3xs font-semibold text-slate-400"
+          class="rounded-md border border-slate-900 bg-slate-900/30 px-1.5 py-0.5 text-sm text-slate-200"
         >
           {{ tag }}
         </span>
       </div>
 
-      <!-- Card Footer: Subtask progress, Due date and Assignee -->
+      <!-- Card Footer:  Due date and Assignee -->
       <div class="mt-4 pt-3 border-t border-slate-900 flex items-center justify-between gap-2">
         <!-- Assignee -->
         <div
