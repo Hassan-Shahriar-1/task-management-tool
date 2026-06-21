@@ -11,7 +11,10 @@ function loadTasks() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
-      tasks.value = JSON.parse(raw)
+      tasks.value = JSON.parse(raw).map((task) => ({
+        type: task.type || 'Task',
+        ...task,
+      }))
       loaded = true
       return
     }
@@ -36,6 +39,14 @@ function addTask(task) {
   saveTasks()
 }
 
+function updateTask(updatedTask) {
+  const index = tasks.value.findIndex((task) => task.id === updatedTask.id)
+  if (index !== -1) {
+    tasks.value[index] = { ...tasks.value[index], ...updatedTask }
+    saveTasks()
+  }
+}
+
 const groupedTasks = computed(() => {
   const groups = {}
   statuses.forEach((status) => {
@@ -50,6 +61,7 @@ export function useTasks() {
     tasks,
     groupedTasks,
     addTask,
+    updateTask,
     saveTasks,
   }
 }

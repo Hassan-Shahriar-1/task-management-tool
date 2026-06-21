@@ -8,8 +8,8 @@
           <p class="text-2xs uppercase tracking-[0.24em] text-slate-500">Create task</p>
           <h1 class="text-4xl font-extrabold tracking-tight text-white">Create a new issue</h1>
           <p class="max-w-xl text-sm leading-6 text-slate-400">
-            Use this page to create a full task with project selection, status, priority, and a
-            detailed description. It is designed as a separate Jira-style page, not a popup modal.
+            Use this page to create a full task with project selection, status, priority, type, and
+            a detailed description.
           </p>
         </div>
 
@@ -21,7 +21,7 @@
                 <span class="text-emerald-400">•</span> Add task details with more room and clarity.
               </li>
               <li class="flex gap-2">
-                <span class="text-emerald-400">•</span> Select project and status directly on the
+                <span class="text-emerald-400">•</span> Select project, status, and task type on one
                 page.
               </li>
               <li class="flex gap-2">
@@ -63,11 +63,11 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import CreateTaskForm from '../components/CreateTaskForm.vue'
-import { useTasks } from '../composables/useTasks.js'
-import { projects } from '../data/projects.js'
-import { users } from '../data/users.js'
-import { statuses, priorityMeta, taskTypes } from '../data/statuses.js'
+import CreateTaskForm from '../../components/CreateTaskForm.vue'
+import { useTasks } from '../../composables/useTasks.js'
+import { projects } from '../../data/projects.js'
+import { users } from '../../data/users.js'
+import { statuses, priorityMeta, taskTypes } from '../../data/statuses.js'
 
 const router = useRouter()
 const { addTask } = useTasks()

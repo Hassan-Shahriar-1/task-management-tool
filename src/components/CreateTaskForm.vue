@@ -32,7 +32,7 @@
             </div>
           </div>
 
-          <div class="grid gap-4 md:grid-cols-2">
+          <div class="grid gap-4 md:grid-cols-3">
             <div>
               <label class="text-2xs text-slate-400">Project</label>
               <select
@@ -58,6 +58,18 @@
               </select>
               <div v-if="v$.status.$error" class="mt-2 text-2xs text-rose-400">
                 Status is required
+              </div>
+            </div>
+            <div>
+              <label class="text-2xs text-slate-400">Type</label>
+              <select
+                v-model="taskType"
+                class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm text-white border border-slate-800 focus:border-blue-500 focus:ring-blue-500/25"
+              >
+                <option v-for="t in taskTypes" :key="t" :value="t">{{ t }}</option>
+              </select>
+              <div v-if="v$.taskType.$error" class="mt-2 text-2xs text-rose-400">
+                Task type is required
               </div>
             </div>
           </div>
@@ -135,7 +147,10 @@
         <p class="text-2xs uppercase tracking-[0.24em] text-slate-500">Preview</p>
         <div class="mt-3 rounded-3xl bg-slate-950 p-4 text-sm text-slate-200">
           <p class="font-semibold text-white">{{ title || 'Task title preview' }}</p>
-          <p class="mt-2 text-slate-500">{{ project.name }} • {{ status }} • {{ priority }}</p>
+          <p class="mt-2 text-slate-500">
+            {{ project.name }} • {{ status }} • {{ priority }} • {{ taskType }}
+          </p>
+          <p class="mt-2 text-xs text-slate-400">Preview ID: {{ previewId }}</p>
         </div>
       </div>
 
@@ -160,7 +175,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { statuses as defaultStatuses } from '../data/statuses.js'
+import { statuses as defaultStatuses, taskTypes as defaultTaskTypes } from '../data/statuses.js'
 import useVuelidate from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
 
@@ -171,6 +186,7 @@ const props = defineProps({
   users: { type: Array, default: () => [] },
   priorities: { type: Array, default: () => ['High', 'Medium', 'Low'] },
   statuses: { type: Array, default: () => defaultStatuses },
+  taskTypes: { type: Array, default: () => defaultTaskTypes },
 })
 
 const emit = defineEmits(['cancel', 'create'])
@@ -179,6 +195,7 @@ const title = ref('')
 const description = ref('')
 const status = ref(props.status || (props.statuses && props.statuses[0]) || null)
 const priority = ref('Medium')
+const taskType = ref(props.taskTypes && props.taskTypes[0] ? props.taskTypes[0] : 'Task')
 const projectId = ref(
   props.projectId ?? (props.projects && props.projects[0] ? props.projects[0].id : null),
 )
@@ -199,9 +216,10 @@ const rules = computed(() => ({
   title: { required, minLength: minLength(3) },
   status: { required },
   priority: { required },
+  taskType: { required },
 }))
 
-const v$ = useVuelidate(rules, { title, status, priority })
+const v$ = useVuelidate(rules, { title, status, priority, taskType })
 
 watch(
   () => props.projectId,
@@ -234,6 +252,7 @@ async function submit() {
     id,
     title: title.value,
     description: description.value,
+    type: taskType.value,
     status: status.value || props.status || statuses.value[0],
     priority: priority.value,
     tags: tags.value.slice(),

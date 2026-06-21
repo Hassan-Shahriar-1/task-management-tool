@@ -24,18 +24,6 @@
           />
         </svg>
       </button>
-      <!-- <div class="flex items-start justify-between mb-2 gap-2">
-        <div>
-          <div class="flex items-center gap-3">
-            <div>
-              <div class="text-2xs text-slate-400">{{ project.name }}</div>
-            </div>
-          </div>
-          <div class="mt-2 text-2xs text-slate-400">
-            Task ID preview: <span class="font-mono text-slate-200">{{ previewId }}</span>
-          </div>
-        </div>
-      </div> -->
 
       <form @submit.prevent="submit">
         <div class="rounded-3xl border border-slate-800 bg-slate-900 p-6 space-y-6">
@@ -62,13 +50,25 @@
           </div>
 
           <div class="flex gap-4">
-            <div class="w-1/3">
+            <div class="w-1/4">
               <label class="text-2xs text-slate-400">Project</label>
               <div class="mt-2 rounded-2xl bg-slate-900 px-3 py-2 text-sm text-slate-100">
                 {{ project.name }}
               </div>
             </div>
-            <div class="w-1/3">
+            <div class="w-1/4">
+              <label class="text-2xs text-slate-400">Type</label>
+              <select
+                v-model="taskType"
+                class="mt-2 w-full rounded-2xl bg-slate-900 px-3 py-2 text-sm text-white border border-slate-800 focus:border-blue-500 focus:ring-blue-500/25"
+              >
+                <option v-for="t in taskTypes" :key="t" :value="t">{{ t }}</option>
+              </select>
+              <div v-if="v$.taskType.$error" class="mt-2 text-2xs text-rose-400">
+                Task type is required
+              </div>
+            </div>
+            <div class="w-1/4">
               <label class="text-2xs text-slate-400">Status</label>
               <select
                 v-model="status"
@@ -80,7 +80,7 @@
                 Status is required
               </div>
             </div>
-            <div class="w-1/3">
+            <div class="w-1/4">
               <label class="text-2xs text-slate-400">Priority</label>
               <select
                 v-model="priority"
@@ -152,7 +152,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { statuses as defaultStatuses } from '../data/statuses.js'
+import { statuses as defaultStatuses, taskTypes as defaultTaskTypes } from '../data/statuses.js'
 import useVuelidate from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
 
@@ -163,6 +163,7 @@ const props = defineProps({
   users: { type: Array, default: () => [] },
   priorities: { type: Array, default: () => ['High', 'Medium', 'Low'] },
   statuses: { type: Array, default: () => defaultStatuses },
+  taskTypes: { type: Array, default: () => defaultTaskTypes },
 })
 
 const emit = defineEmits(['close', 'create'])
@@ -171,6 +172,7 @@ const title = ref('')
 const description = ref('')
 const status = ref(props.status || (props.statuses && props.statuses[0]) || null)
 const priority = ref('Medium')
+const taskType = ref(props.taskTypes && props.taskTypes[0] ? props.taskTypes[0] : 'Task')
 const projectId = ref(
   props.projectId ?? (props.projects && props.projects[0] ? props.projects[0].id : null),
 )
@@ -191,9 +193,10 @@ const rules = computed(() => ({
   title: { required, minLength: minLength(3) },
   status: { required },
   priority: { required },
+  taskType: { required },
 }))
 
-const v$ = useVuelidate(rules, { title, status, priority })
+const v$ = useVuelidate(rules, { title, status, priority, taskType })
 
 // keep projectId in sync if prop changes
 watch(
@@ -233,6 +236,7 @@ async function submit() {
     id,
     title: title.value,
     description: description.value,
+    type: taskType.value,
     status: status.value || props.status || statuses.value[0],
     priority: priority.value,
     tags: tags.value.slice(),

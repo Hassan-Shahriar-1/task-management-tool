@@ -18,4 +18,6 @@ export const priorityMeta = {
   Low: { bg: 'bg-slate-500/10', text: 'text-slate-400', border: 'border-slate-800', icon: '💤' },
 }
 
-export default { statuses, statusMeta, priorityMeta }
+export const taskTypes = ['Task', 'Bug', 'Feature', 'Improvement']
+
+export default { statuses, statusMeta, priorityMeta, taskTypes }

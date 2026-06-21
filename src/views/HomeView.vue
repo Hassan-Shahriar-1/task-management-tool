@@ -25,7 +25,7 @@
 
       <div class="flex items-center gap-3">
         <router-link
-          to="/create-task"
+          to="/tasks/create"
           class="rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-slate-900"
         >
           + Create task
@@ -127,6 +127,7 @@
       :users="users"
       :priorities="Object.keys(priorityMeta)"
       :statuses="columns"
+      :task-types="taskTypes"
       @close="closeModal"
       @create="handleCreateTask"
     />
@@ -136,7 +137,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useTasks } from '../composables/useTasks.js'
-import { statuses, statusMeta, priorityMeta } from '../data/statuses.js'
+import { statuses, statusMeta, priorityMeta, taskTypes } from '../data/statuses.js'
 import { projects } from '../data/projects.js'
 import { users } from '../data/users.js'
 import TaskCard from '../components/TaskCard.vue'
