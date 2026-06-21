@@ -1,127 +1,3 @@
-<script setup>
-import { ref, computed } from 'vue'
-
-// Mock tasks data
-const tasks = ref([
-  {
-    id: 'AEGIS-302',
-    title: 'Implement OAuth2 login flow',
-    description:
-      'Setup Google and GitHub OAuth providers with session management and cookie security.',
-    status: 'In Progress',
-    priority: 'High',
-    tags: ['Security', 'Backend'],
-    subtasksCompleted: 4,
-    subtasksTotal: 5,
-    assignee: { name: 'John Doe', initial: 'JD', color: 'from-emerald-400 to-emerald-600' },
-  },
-  {
-    id: 'AEGIS-104',
-    title: 'Design landing page hero component',
-    description:
-      'Create high-fidelity animations, responsive glassmorphism sections and premium copy.',
-    status: 'To Do',
-    priority: 'Medium',
-    tags: ['Design', 'Marketing'],
-    subtasksCompleted: 1,
-    subtasksTotal: 4,
-    assignee: { name: 'Alice Lin', initial: 'AL', color: 'from-fuchsia-400 to-fuchsia-600' },
-  },
-  {
-    id: 'AEGIS-309',
-    title: 'Fix session timeout edge case',
-    description: 'Gracefully handle token expiration during long uploads and active file streams.',
-    status: 'In Progress',
-    priority: 'Low',
-    tags: ['Bug', 'Core'],
-    subtasksCompleted: 2,
-    subtasksTotal: 2,
-    assignee: { name: 'Steve Miller', initial: 'SM', color: 'from-amber-400 to-amber-600' },
-  },
-  {
-    id: 'AEGIS-223',
-    title: 'Write core API integration tests',
-    description:
-      'Add coverage for user registration, task retrieval, and column modification API endpoints.',
-    status: 'To Do',
-    priority: 'Medium',
-    tags: ['Testing'],
-    subtasksCompleted: 0,
-    subtasksTotal: 8,
-    assignee: { name: 'John Doe', initial: 'JD', color: 'from-emerald-400 to-emerald-600' },
-  },
-  {
-    id: 'AEGIS-112',
-    title: 'Setup GitHub Actions CI pipeline',
-    description: 'Automate unit tests, lint checks, and coverage reports on pull request merges.',
-    status: 'Done',
-    priority: 'High',
-    tags: ['DevOps'],
-    subtasksCompleted: 6,
-    subtasksTotal: 6,
-    assignee: { name: 'Alice Lin', initial: 'AL', color: 'from-fuchsia-400 to-fuchsia-600' },
-  },
-  {
-    id: 'AEGIS-145',
-    title: 'Optimize asset loading and compression',
-    description: 'Configure Vite build assets to compress large visual elements automatically.',
-    status: 'Done',
-    priority: 'Low',
-    tags: ['Performance'],
-    subtasksCompleted: 3,
-    subtasksTotal: 3,
-    assignee: { name: 'Steve Miller', initial: 'SM', color: 'from-amber-400 to-amber-600' },
-  },
-  {
-    id: 'AEGIS-412',
-    title: 'Refactor database migrations',
-    description: 'Merge overlapping migration files and optimize indexing on task queries.',
-    status: 'To Do',
-    priority: 'High',
-    tags: ['Database', 'Backend'],
-    subtasksCompleted: 0,
-    subtasksTotal: 3,
-    assignee: { name: 'John Doe', initial: 'JD', color: 'from-emerald-400 to-emerald-600' },
-  },
-])
-
-// Columns config
-const columns = ['To Do', 'In Progress', 'Done']
-
-// Column colors mapping for indicators
-const columnMeta = {
-  'To Do': { dot: 'bg-blue-500', bg: 'bg-blue-500/10', text: 'text-blue-400' },
-  'In Progress': { dot: 'bg-amber-500', bg: 'bg-amber-500/10', text: 'text-amber-400' },
-  Done: { dot: 'bg-emerald-500', bg: 'bg-emerald-500/10', text: 'text-emerald-400' },
-}
-
-// Priority colors
-const priorityMeta = {
-  High: { bg: 'bg-rose-500/10', text: 'text-rose-400', border: 'border-rose-500/20', icon: '🔥' },
-  Medium: {
-    bg: 'bg-amber-500/10',
-    text: 'text-amber-400',
-    border: 'border-amber-500/20',
-    icon: '⚡',
-  },
-  Low: { bg: 'bg-slate-500/10', text: 'text-slate-400', border: 'border-slate-800', icon: '💤' },
-}
-
-// Filtered tasks logic
-const filteredTasks = computed(() => {
-  return tasks.value
-})
-
-// Group tasks by column status
-const groupedTasks = computed(() => {
-  const groups = {}
-  columns.forEach((col) => {
-    groups[col] = tasks.value.filter((task) => task.status === col)
-  })
-  return groups
-})
-</script>
-
 <template>
   <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
     <!-- Top breadcrumb & board header -->
@@ -248,6 +124,7 @@ const groupedTasks = computed(() => {
 
         <!-- Task Cards Area -->
         <div class="flex flex-col gap-3 min-h-[300px] mt-1">
+          <TaskCard :task="dummyTask" />
           <div
             v-for="task in groupedTasks[col]"
             :key="task.id"
@@ -331,3 +208,45 @@ const groupedTasks = computed(() => {
     </div>
   </div>
 </template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import { tasks as tasksData } from '../data/tasks.js'
+import { users } from '../data/users.js'
+import { statuses, statusMeta, priorityMeta } from '../data/statuses.js'
+import { projects } from '../data/projects.js'
+import TaskCard from '../components/TaskCard.vue'
+
+// Initialize reactive tasks data
+const tasks = ref(tasksData)
+
+// Columns config - imported from statuses
+const columns = statuses
+
+// Column colors mapping - imported from statuses
+const columnMeta = statusMeta
+
+// Filtered tasks logic
+const filteredTasks = computed(() => {
+  return tasks.value
+})
+
+// Group tasks by column status
+const groupedTasks = computed(() => {
+  const groups = {}
+  columns.forEach((col) => {
+    groups[col] = tasks.value.filter((task) => task.status === col)
+  })
+  return groups
+})
+
+const dummyTask = {
+  id: 'T-000',
+  title: 'Sample Task Title',
+  description: 'This is a sample task description to illustrate the card layout.',
+  priority: 'High',
+  tags: ['frontend', 'bug'],
+  assignee: users[0],
+  due_date: '2024-07-15',
+}
+</script>

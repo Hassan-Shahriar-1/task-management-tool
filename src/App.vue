@@ -1,11 +1,7 @@
-<script setup>
-import { RouterView } from 'vue-router'
-import Navbar from './components/Navbar.vue'
-import Footer from './components/Footer.vue'
-</script>
-
 <template>
-  <div class="flex min-h-screen flex-col bg-slate-950 text-slate-100 selection:bg-brand-500/30 selection:text-brand-200">
+  <div
+    class="flex min-h-screen flex-col bg-slate-950 text-slate-100 selection:bg-brand-500/30 selection:text-brand-200"
+  >
     <!-- Global Header/Navbar -->
     <Navbar />
 
@@ -26,3 +22,9 @@ body {
   padding: 0;
 }
 </style>
+
+<script setup>
+import { RouterView } from 'vue-router'
+import Navbar from './components/Navbar.vue'
+import Footer from './components/Footer.vue'
+</script>
