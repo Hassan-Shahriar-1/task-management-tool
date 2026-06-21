@@ -2,7 +2,8 @@
   <div class="flex flex-col gap-3 m-1">
     <div
       @click="selectTask"
-      class="group flex flex-col rounded-xl border border-slate-900 bg-slate-950 p-4 shadow-sm hover:border-slate-800/80 hover:shadow-md hover:shadow-brand-950/10 cursor-pointer hover:-translate-y-[2px] transition-all duration-300"
+      class="group flex flex-col rounded-xl border bg-slate-950 p-4 shadow-sm hover:shadow-md hover:shadow-brand-950/10 cursor-pointer hover:-translate-y-[2px] transition-all duration-300"
+      :class="isOverdue ? 'border-rose-500/40 hover:border-rose-500' : 'border-slate-900 hover:border-slate-800/80'"
     >
       <!-- Card Head: Task ID, Type & Priority -->
       <div class="flex items-center justify-between mb-2 gap-3">
@@ -110,6 +111,10 @@ const dueStatus = computed(() => {
   if (due.isBefore(today)) return 'overdue'
   if (due.isSame(today) || due.isSame(tomorrow)) return 'imminent'
   return 'upcoming'
+})
+
+const isOverdue = computed(() => {
+  return dueStatus.value === 'overdue' && props.task.status !== 'Done'
 })
 
 const dueClass = computed(() => {
