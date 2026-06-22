@@ -9,11 +9,6 @@
       <div class="flex items-center justify-between mb-2 gap-3">
         <div class="flex items-center gap-2">
           <span
-            class="text-2xs font-semibold text-slate-500 tracking-wider group-hover:text-slate-400 transition-colors"
-          >
-            {{ task.id }}
-          </span>
-          <span
             class="rounded-full px-2 py-0.5 text-xs font-medium flex items-center gap-1.5"
             :class="taskTypeMeta[task.type || 'Task']?.bg || 'bg-slate-800'"
           >
@@ -22,16 +17,41 @@
               {{ task.type || 'Task' }}
             </span>
           </span>
+          <span
+            class="text-2xs font-semibold text-slate-500 tracking-wider group-hover:text-slate-400 transition-colors"
+          >
+            {{ task.id }}
+          </span>
         </div>
         <PriorityBadge :priority="task.priority" />
       </div>
 
-      <!-- Card Title -->
-      <h3
-        class="text-sm font-bold text-slate-200 line-clamp-2 leading-snug group-hover:text-white transition-colors"
-      >
-        {{ task.title }}
-      </h3>
+      <!-- Card Title and Assignee (Jira style - rightmost of title card) -->
+      <div class="flex items-start justify-between gap-3 mt-1">
+        <h3
+          class="text-sm font-bold text-slate-200 line-clamp-2 leading-snug group-hover:text-white transition-colors flex-grow"
+        >
+          {{ task.title }}
+        </h3>
+        <!-- Assignee Circle Avatar -->
+        <div
+          v-if="task.assignee && task.assignee.name !== 'Unassigned'"
+          class="h-6 w-6 rounded-full bg-gradient-to-br flex items-center justify-center text-[10px] font-bold text-white ring-1 ring-slate-800/80 shadow-sm flex-shrink-0"
+          :class="task.assignee.color"
+          :title="'Assigned to: ' + task.assignee.name"
+        >
+          {{ task.assignee.initial }}
+        </div>
+        <div
+          v-else
+          class="h-6 w-6 rounded-full bg-slate-900 border border-slate-850 flex items-center justify-center text-slate-550 shadow-sm flex-shrink-0"
+          title="Unassigned"
+        >
+          <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      </div>
 
       <!-- Card Description -->
       <!-- <p class="mt-1 text-2xs text-slate-500 line-clamp-2 leading-relaxed">
@@ -49,22 +69,26 @@
         </span>
       </div>
 
-      <!-- Card Footer:  Due date and Assignee -->
-      <div class="mt-3 pt-2 border-t border-slate-900 flex items-center justify-between gap-2">
-        <!-- Assignee -->
-        <div
-          class="h-6 w-6 rounded bg-gradient-to-br flex items-center justify-center text-sm text-white ring-1 ring-slate-800 shadow"
-          :class="task.assignee?.color"
-          :title="'Assigned to ' + (task.assignee?.name || 'Unassigned')"
-        >
-          {{ task.assignee?.initial || '?' }}
+      <!-- Card Footer: Created By & Due Date -->
+      <div class="mt-3.5 pt-2.5 border-t border-slate-900/60 flex items-center justify-between gap-2 text-2xs">
+        <!-- Left Side: Created By -->
+        <div class="flex items-center gap-1.5">
+          <div
+            class="h-4.5 w-4.5 rounded-full bg-gradient-to-br flex items-center justify-center text-[9px] font-bold text-white ring-1 ring-slate-800/80 shadow-sm"
+            :class="task.reporter?.color || 'from-slate-700 to-slate-850'"
+            :title="'Created by: ' + (task.reporter?.name || 'System')"
+          >
+            {{ task.reporter?.initial || 'S' }}
+          </div>
+          <span class="text-slate-500 font-medium">
+            By <span class="text-slate-350 hover:text-white transition-colors">{{ task.reporter?.name || 'System' }}</span>
+          </span>
         </div>
 
-        <div class="flex items-center gap-2">
-          <div v-if="task.due_date" class="flex items-center gap-2">
-            <IconCalendar :class="dueClass" />
-            <span :class="['text-2xs font-semibold', dueClass]">{{ formattedDueDate }}</span>
-          </div>
+        <!-- Right Side: Due Date -->
+        <div v-if="task.due_date" class="flex items-center gap-1.5">
+          <IconCalendar :class="dueClass" class="h-3.5 w-3.5" />
+          <span :class="['font-semibold', dueClass]">{{ formattedDueDate }}</span>
         </div>
       </div>
     </div>
