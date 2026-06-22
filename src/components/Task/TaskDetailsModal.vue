@@ -27,7 +27,14 @@
           </button>
           <button
             type="button"
-            class="rounded-xl bg-indigo-600 hover:bg-indigo-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-all cursor-pointer animate-pulse"
+            class="rounded-xl bg-rose-600 hover:bg-rose-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-all cursor-pointer"
+            @click="handleDelete"
+          >
+            Delete
+          </button>
+          <button
+            type="button"
+            class="rounded-xl bg-indigo-600 hover:bg-indigo-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-all cursor-pointer"
             @click="close"
           >
             Close
@@ -177,15 +184,28 @@
         </div>
       </div>
     </div>
+
+    <!-- Reusable Global Confirm Modal -->
+    <BaseConfirmModal
+      v-if="showDeleteConfirm"
+      title="Delete Task"
+      message="Are you sure you want to delete this task? This action cannot be undone."
+      confirm-label="Delete"
+      cancel-label="Cancel"
+      type="danger"
+      @confirm="confirmDelete"
+      @cancel="showDeleteConfirm = false"
+    />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { priorityMeta } from '../../data/statuses.js'
 import dayjs from 'dayjs'
 import TaskTypeIcon from '../icons/TaskTypeIcon.vue'
+import { useTasks } from '../../composables/useTasks.js'
 
 const props = defineProps({
   task: { type: Object, required: true },
@@ -237,6 +257,8 @@ const project = computed(
     },
 )
 
+const { deleteTask } = useTasks()
+
 function close() {
   emit('close')
 }
@@ -244,5 +266,17 @@ function close() {
 function openEditPage() {
   emit('close')
   router.push({ name: 'task-edit', params: { id: props.task.id } })
+}
+
+const showDeleteConfirm = ref(false)
+
+function handleDelete() {
+  showDeleteConfirm.value = true
+}
+
+function confirmDelete() {
+  deleteTask(props.task.id)
+  showDeleteConfirm.value = false
+  emit('close')
 }
 </script>

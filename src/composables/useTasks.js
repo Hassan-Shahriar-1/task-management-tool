@@ -47,6 +47,11 @@ function updateTask(updatedTask) {
   }
 }
 
+function deleteTask(id) {
+  tasks.value = tasks.value.filter((task) => task.id !== id)
+  saveTasks()
+}
+
 const groupedTasks = computed(() => {
   const groups = {}
   statuses.forEach((status) => {
@@ -62,6 +67,7 @@ export function useTasks() {
     groupedTasks,
     addTask,
     updateTask,
+    deleteTask,
     saveTasks,
   }
 }
