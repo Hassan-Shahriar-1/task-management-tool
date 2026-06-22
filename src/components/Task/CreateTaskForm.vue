@@ -57,7 +57,7 @@
                 class="w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all flex items-center justify-between cursor-pointer"
               >
                 <div class="flex items-center gap-2">
-                  <component :is="typeIconMap[taskType]" class="h-4 w-4 flex-shrink-0" />
+                  <TaskTypeIcon :type="taskType" class="h-4 w-4 flex-shrink-0" />
                   <span>{{ taskType }}</span>
                 </div>
                 <svg
@@ -83,7 +83,7 @@
                   :class="{ 'bg-slate-900 text-white font-semibold': taskType === t }"
                 >
                   <div class="flex items-center gap-2">
-                    <component :is="typeIconMap[t]" class="h-4 w-4 flex-shrink-0" />
+                    <TaskTypeIcon :type="t" class="h-4 w-4 flex-shrink-0" />
                     <span>{{ t }}</span>
                   </div>
                   <svg
@@ -181,17 +181,7 @@ import { statuses as defaultStatuses, taskTypes as defaultTaskTypes, priorityMet
 import useVuelidate from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
-import TaskIcon from '../icons/TaskIcon.vue'
-import BugIcon from '../icons/BugIcon.vue'
-import FeatureIcon from '../icons/FeatureIcon.vue'
-import ImprovementIcon from '../icons/ImprovementIcon.vue'
-
-const typeIconMap = {
-  Task: TaskIcon,
-  Bug: BugIcon,
-  Feature: FeatureIcon,
-  Improvement: ImprovementIcon,
-}
+import TaskTypeIcon from '../icons/TaskTypeIcon.vue'
 
 const isTypeDropdownOpen = ref(false)
 const typeDropdownRef = ref(null)

@@ -9,11 +9,10 @@
         class="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-6 py-3.5 flex-shrink-0"
       >
         <div class="flex items-center gap-3">
-          <component :is="typeIconMap[task.type || 'Task']" class="h-5 w-5 flex-shrink-0" />
+          <TaskTypeIcon :type="task.type || 'Task'" class="h-5 w-5 flex-shrink-0" />
           <div>
-            <h2 class="text-base font-bold text-white leading-tight">{{ task.title }}</h2>
             <p class="text-3xs text-slate-450 uppercase tracking-wider mt-0.5">
-              {{ task.id }} &nbsp;•&nbsp; {{ task.type || 'Task' }}
+              {{ task.id }} &nbsp;
             </p>
           </div>
         </div>
@@ -40,13 +39,15 @@
         <div class="grid grid-cols-1 md:grid-cols-[1.7fr_1fr] gap-8 items-start">
           <!-- Left Column: Description -->
           <div class="space-y-4 pr-2">
-            <h3 class="text-[10px] uppercase tracking-[0.2em] text-slate-550 font-semibold">
-              Description
-            </h3>
-            <p
-              v-if="task.description"
-              class="text-base leading-relaxed text-slate-300 whitespace-pre-wrap font-normal"
-            >
+            <h3 class="text-[12px] uppercase tracking-[0.2em]">Title</h3>
+
+            <p v-if="task.title" class="text-sm whitespace-pre-wrap font-normal">
+              {{ task.title }}
+            </p>
+            <p v-else class="text-sm font-normal">-</p>
+
+            <h3 class="text-[12px] uppercase tracking-[0.2em]">Description</h3>
+            <p v-if="task.description" class="text-sm whitespace-pre-wrap font-normal">
               {{ task.description }}
             </p>
             <p v-else class="text-sm text-slate-600 italic font-normal">
@@ -58,11 +59,11 @@
           <div
             class="rounded-2xl border border-slate-800 bg-slate-900/25 backdrop-blur-md p-6 space-y-5"
           >
-            <h3
+            <!-- <h3
               class="text-2xs font-bold uppercase tracking-wider text-slate-400 pb-2 border-b border-slate-800/60"
             >
               Attributes
-            </h3>
+            </h3> -->
 
             <div class="space-y-4 text-xs font-normal text-slate-300">
               <!-- Project Row -->
@@ -85,6 +86,17 @@
                   class="rounded-lg bg-slate-950 px-2.5 py-1 text-xs text-slate-300 border border-slate-850"
                 >
                   {{ task.status }}
+                </span>
+              </div>
+
+              <!-- Type Row -->
+              <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
+                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+                  >Type</span
+                >
+                <span class="flex items-center gap-1.5 text-slate-300 font-medium">
+                  <TaskTypeIcon :type="task.type || 'Task'" class="h-4 w-4" />
+                  {{ task.type || 'Task' }}
                 </span>
               </div>
 
@@ -124,14 +136,18 @@
                 </span>
               </div>
 
-              <!-- Type Row -->
+              <!-- Created By Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
                 <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
-                  >Type</span
+                  >Created By</span
                 >
-                <span class="flex items-center gap-1.5 text-slate-300 font-medium">
-                  <component :is="typeIconMap[task.type || 'Task']" class="h-4 w-4" />
-                  {{ task.type || 'Task' }}
+                <span class="flex items-center gap-2 text-slate-200 font-medium">
+                  <span
+                    class="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br text-[10px] font-bold text-white uppercase ring-1 ring-slate-800"
+                    :class="task.reporter?.color || 'from-slate-700 to-slate-850'"
+                    >{{ task.reporter?.initial || 'S' }}</span
+                  >
+                  {{ task.reporter?.name || 'System' }}
                 </span>
               </div>
 
@@ -169,17 +185,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { priorityMeta } from '../../data/statuses.js'
 import dayjs from 'dayjs'
-import TaskIcon from '../icons/TaskIcon.vue'
-import BugIcon from '../icons/BugIcon.vue'
-import FeatureIcon from '../icons/FeatureIcon.vue'
-import ImprovementIcon from '../icons/ImprovementIcon.vue'
-
-const typeIconMap = {
-  Task: TaskIcon,
-  Bug: BugIcon,
-  Feature: FeatureIcon,
-  Improvement: ImprovementIcon,
-}
+import TaskTypeIcon from '../icons/TaskTypeIcon.vue'
 
 const props = defineProps({
   task: { type: Object, required: true },

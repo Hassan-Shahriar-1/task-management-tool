@@ -12,7 +12,7 @@
             class="rounded-full px-2 py-0.5 text-xs font-medium flex items-center gap-1.5"
             :class="taskTypeMeta[task.type || 'Task']?.bg || 'bg-slate-800'"
           >
-            <component :is="typeIconMap[task.type || 'Task']" class="h-3.5 w-3.5 flex-shrink-0" />
+            <TaskTypeIcon :type="task.type || 'Task'" class="h-3.5 w-3.5 flex-shrink-0" />
             <span :class="taskTypeMeta[task.type || 'Task']?.color || 'text-slate-300'">
               {{ task.type || 'Task' }}
             </span>
@@ -101,17 +101,7 @@ import dayjs from 'dayjs'
 import IconCalendar from '../icons/IconCalendar.vue'
 import PriorityBadge from './PriorityBadge.vue'
 import { taskTypeMeta } from '../../data/statuses.js'
-import TaskIcon from '../icons/TaskIcon.vue'
-import BugIcon from '../icons/BugIcon.vue'
-import FeatureIcon from '../icons/FeatureIcon.vue'
-import ImprovementIcon from '../icons/ImprovementIcon.vue'
-
-const typeIconMap = {
-  Task: TaskIcon,
-  Bug: BugIcon,
-  Feature: FeatureIcon,
-  Improvement: ImprovementIcon,
-}
+import TaskTypeIcon from '../icons/TaskTypeIcon.vue'
 
 const props = defineProps({
   task: {
