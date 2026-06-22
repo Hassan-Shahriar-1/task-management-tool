@@ -130,7 +130,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { taskTypeMeta, priorityMeta } from '../../data/statuses.js'
+import { priorityMeta } from '../../data/statuses.js'
 import dayjs from 'dayjs'
 import TaskIcon from '../icons/TaskIcon.vue'
 import BugIcon from '../icons/BugIcon.vue'

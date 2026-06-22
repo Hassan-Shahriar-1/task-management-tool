@@ -50,14 +50,54 @@
 
           <div>
             <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Issue type</label>
-            <select
-              v-model="taskType"
-              class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
-            >
-              <option v-for="t in taskTypes" :key="t" :value="t">
-                {{ taskTypeMeta[t]?.icon }} &nbsp; {{ t }}
-              </option>
-            </select>
+            <div class="relative mt-1.5" ref="typeDropdownRef">
+              <button
+                type="button"
+                @click="isTypeDropdownOpen = !isTypeDropdownOpen"
+                class="w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all flex items-center justify-between cursor-pointer"
+              >
+                <div class="flex items-center gap-2">
+                  <component :is="typeIconMap[taskType]" class="h-4 w-4 flex-shrink-0" />
+                  <span>{{ taskType }}</span>
+                </div>
+                <svg
+                  class="h-4 w-4 text-slate-450 transition-transform duration-200"
+                  :class="{ 'rotate-180': isTypeDropdownOpen }"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <div
+                v-if="isTypeDropdownOpen"
+                class="absolute left-0 right-0 mt-2 z-50 rounded-xl border border-slate-800 bg-slate-950 p-1.5 shadow-xl"
+              >
+                <div
+                  v-for="t in taskTypes"
+                  :key="t"
+                  @click="selectTaskType(t)"
+                  class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer text-xs text-slate-350 hover:bg-slate-900 hover:text-white transition-all"
+                  :class="{ 'bg-slate-900 text-white font-semibold': taskType === t }"
+                >
+                  <div class="flex items-center gap-2">
+                    <component :is="typeIconMap[t]" class="h-4 w-4 flex-shrink-0" />
+                    <span>{{ t }}</span>
+                  </div>
+                  <svg
+                    v-if="taskType === t"
+                    class="h-4 w-4 text-indigo-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div>
@@ -136,11 +176,44 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { statuses as defaultStatuses, taskTypes as defaultTaskTypes, taskTypeMeta, priorityMeta } from '../../data/statuses.js'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { statuses as defaultStatuses, taskTypes as defaultTaskTypes, priorityMeta } from '../../data/statuses.js'
 import useVuelidate from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
+import TaskIcon from '../icons/TaskIcon.vue'
+import BugIcon from '../icons/BugIcon.vue'
+import FeatureIcon from '../icons/FeatureIcon.vue'
+import ImprovementIcon from '../icons/ImprovementIcon.vue'
+
+const typeIconMap = {
+  Task: TaskIcon,
+  Bug: BugIcon,
+  Feature: FeatureIcon,
+  Improvement: ImprovementIcon,
+}
+
+const isTypeDropdownOpen = ref(false)
+const typeDropdownRef = ref(null)
+
+const selectTaskType = (t) => {
+  taskType.value = t
+  isTypeDropdownOpen.value = false
+}
+
+const handleOutsideClick = (event) => {
+  if (typeDropdownRef.value && !typeDropdownRef.value.contains(event.target)) {
+    isTypeDropdownOpen.value = false
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('click', handleOutsideClick)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('click', handleOutsideClick)
+})
 
 const props = defineProps({
   task: { type: Object, default: null },

@@ -16,11 +16,8 @@
           >
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
           </svg>
-          <span class="text-slate-400">Task Management Tool</span>
+          <span class="text-slate-400">Sprint 4 Board</span>
         </div>
-        <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-          Sprint 4 Board
-        </h1>
       </div>
 
       <div class="flex items-center gap-3">

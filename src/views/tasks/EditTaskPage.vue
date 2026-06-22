@@ -50,7 +50,6 @@ const router = useRouter()
 const { tasks, updateTask } = useTasks()
 
 const task = computed(() => tasks.value.find((item) => item.id === route.params.id))
-const projectId = computed(() => task.value?.projectId)
 
 function goBack() {
   router.push('/')

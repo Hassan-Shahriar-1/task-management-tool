@@ -43,7 +43,7 @@
 <script setup>
 import CreateTaskForm from './CreateTaskForm.vue'
 
-const props = defineProps({
+defineProps({
   status: { type: String, default: null },
   projectId: { type: [String, Number], default: null },
   projects: { type: Array, default: () => [] },
