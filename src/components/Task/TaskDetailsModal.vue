@@ -17,29 +17,39 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <button
             type="button"
-            class="rounded-xl border border-slate-800 bg-slate-900 px-3.5 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all cursor-pointer"
+            class="rounded-xl border border-slate-800 bg-slate-900 px-3.5 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all cursor-pointer flex items-center gap-1.5"
             @click="openEditPage"
+            title="Edit task"
           >
-            Edit
+            <EditIcon class="h-4 w-4" />
+            <span>Edit</span>
           </button>
           <button
             type="button"
-            class="rounded-xl bg-rose-600 hover:bg-rose-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-all cursor-pointer"
+            class="rounded-xl bg-rose-600 hover:bg-rose-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-all cursor-pointer flex items-center gap-1.5"
             @click="handleDelete"
+            title="Delete task"
           >
-            Delete
+            <DeleteIcon class="h-4 w-4" />
+            <span>Delete</span>
           </button>
           <!-- Cross Close Icon Button -->
           <button
             type="button"
             @click="close"
-            class="rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 p-1.5 transition-all cursor-pointer ml-1"
+            class="rounded-xl text-slate-400 hover:text-white hover:bg-slate-850 p-1.5 transition-all cursor-pointer ml-1"
             title="Close"
           >
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -67,21 +77,13 @@
             >
               {{ task.description }}
             </p>
-            <p v-else class="text-sm text-slate-600 italic font-normal">
-              No description provided for this task.
-            </p>
+            <p v-else class="text-sm text-slate-600 italic font-normal">N/A</p>
           </div>
 
           <!-- Right Column: Sidebar (Minimal Attributes List) -->
           <div
             class="rounded-2xl border border-slate-800 bg-slate-900/25 backdrop-blur-md p-6 space-y-5"
           >
-            <!-- <h3
-              class="text-2xs font-bold uppercase tracking-wider text-slate-400 pb-2 border-b border-slate-800/60"
-            >
-              Attributes
-            </h3> -->
-
             <div class="space-y-4 text-xs font-normal text-slate-300">
               <!-- Project Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
@@ -94,6 +96,17 @@
                 </span>
               </div>
 
+              <!-- Type Row -->
+              <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
+                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+                  >Type</span
+                >
+                <span class="flex items-center gap-1.5 text-slate-300 font-medium">
+                  <TaskTypeIcon :type="task.type || 'Task'" class="h-4 w-4" />
+                  {{ task.type || 'Task' }}
+                </span>
+              </div>
+
               <!-- Status Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
                 <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
@@ -103,17 +116,6 @@
                   class="rounded-lg bg-slate-950 px-2.5 py-1 text-xs text-slate-300 border border-slate-850"
                 >
                   {{ task.status }}
-                </span>
-              </div>
-
-              <!-- Type Row -->
-              <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
-                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
-                  >Type</span
-                >
-                <span class="flex items-center gap-1.5 text-slate-300 font-medium">
-                  <TaskTypeIcon :type="task.type || 'Task'" class="h-4 w-4" />
-                  {{ task.type || 'Task' }}
                 </span>
               </div>
 
@@ -134,8 +136,7 @@
                   >Due Date</span
                 >
                 <span class="flex items-center gap-1.5 font-medium" :class="dueClass">
-                  <span>📅</span>
-                  {{ dueText }}
+                  {{ task.due_date ? dayjs(task.due_date).format('YYYY-MM-DD') : 'N/A' }}
                 </span>
               </div>
 
@@ -185,7 +186,7 @@
                   <span
                     v-if="!task.tags || task.tags.length === 0"
                     class="text-xs text-slate-600 italic"
-                    >No tags</span
+                    >N/A</span
                   >
                 </div>
               </div>
@@ -216,6 +217,8 @@ import { priorityMeta } from '../../data/statuses.js'
 import dayjs from 'dayjs'
 import TaskTypeIcon from '../icons/TaskTypeIcon.vue'
 import { useTasks } from '../../composables/useTasks.js'
+import EditIcon from '../icons/EditIcon.vue'
+import DeleteIcon from '../icons/DeleteIcon.vue'
 
 const props = defineProps({
   task: { type: Object, required: true },
@@ -242,6 +245,7 @@ const dueStatus = computed(() => {
 
 const dueClass = computed(() => {
   if (props.task.status === 'Done') return 'text-slate-300'
+  // if (!props.task.status) return 'text-slate-300'
   if (!dueStatus.value) return 'text-slate-300'
   if (dueStatus.value === 'overdue') return 'text-rose-400 font-semibold'
   if (dueStatus.value === 'imminent') return 'text-amber-400 font-semibold'

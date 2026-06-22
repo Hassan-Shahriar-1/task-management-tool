@@ -16,10 +16,13 @@
         </div>
         <button
           type="button"
-          class="rounded-xl border border-slate-850 bg-slate-950 px-3.5 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-900 hover:text-white transition-all cursor-pointer"
           @click="close"
+          class="rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 p-1.5 transition-all cursor-pointer"
+          title="Close"
         >
-          Close
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
       </div>
 
