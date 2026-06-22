@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-    <div class="mb-8">
+    <div class="mb-4">
       <router-link
         to="/"
         class="group inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-white transition-all"

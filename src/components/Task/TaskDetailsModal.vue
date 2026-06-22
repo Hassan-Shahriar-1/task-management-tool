@@ -32,12 +32,16 @@
           >
             Delete
           </button>
+          <!-- Cross Close Icon Button -->
           <button
             type="button"
-            class="rounded-xl bg-indigo-600 hover:bg-indigo-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-all cursor-pointer"
             @click="close"
+            class="rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 p-1.5 transition-all cursor-pointer ml-1"
+            title="Close"
           >
-            Close
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
       </div>
@@ -48,13 +52,19 @@
           <div class="space-y-4 pr-2">
             <h3 class="text-[12px] uppercase tracking-[0.2em]">Title</h3>
 
-            <p v-if="task.title" class="text-sm whitespace-pre-wrap font-normal">
+            <p
+              v-if="task.title"
+              class="whitespace-pre-wrap text-sm text-slate-600 italic font-normal"
+            >
               {{ task.title }}
             </p>
             <p v-else class="text-sm font-normal">-</p>
 
             <h3 class="text-[12px] uppercase tracking-[0.2em]">Description</h3>
-            <p v-if="task.description" class="text-sm whitespace-pre-wrap font-normal">
+            <p
+              v-if="task.description"
+              class="whitespace-pre-wrap text-sm text-slate-600 italic font-normal"
+            >
               {{ task.description }}
             </p>
             <p v-else class="text-sm text-slate-600 italic font-normal">
