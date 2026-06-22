@@ -136,7 +136,7 @@
                   >Due Date</span
                 >
                 <span class="flex items-center gap-1.5 font-medium" :class="dueClass">
-                  {{ task.due_date ? dayjs(task.due_date).format('YYYY-MM-DD') : 'N/A' }}
+                  {{ dueText }}
                 </span>
               </div>
 

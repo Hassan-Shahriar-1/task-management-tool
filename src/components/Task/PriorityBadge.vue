@@ -1,7 +1,7 @@
 <template>
   <span
     :class="badgeClasses"
-    class="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] flex items-center gap-1"
+    class="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] inline-flex items-center gap-1"
   >
     <span>{{ priorityIcon }}</span>
     <span>{{ priority }}</span>
