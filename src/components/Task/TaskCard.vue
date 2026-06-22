@@ -3,19 +3,23 @@
     <div
       @click="selectTask"
       class="group flex flex-col rounded-xl border bg-slate-950 p-4 shadow-sm hover:shadow-md hover:shadow-brand-950/10 cursor-pointer hover:-translate-y-[2px] transition-all duration-300"
-      :class="isOverdue ? 'border-rose-500/40 hover:border-rose-500' : 'border-slate-900 hover:border-slate-800/80'"
+      :class="
+        isOverdue
+          ? 'border-rose-500/40 hover:border-rose-500'
+          : 'border-slate-900 hover:border-slate-800/80'
+      "
     >
       <!-- Card Head: Task ID, Type & Priority -->
       <div class="flex items-center justify-between mb-2 gap-3">
         <div class="flex items-center gap-2">
           <span
-            class="rounded-full px-2 py-0.5 text-xs font-medium flex items-center gap-1.5"
+            class="rounded-full py-0.5 text-xs font-medium flex items-center gap-1.5"
             :class="taskTypeMeta[task.type || 'Task']?.bg || 'bg-slate-800'"
           >
             <TaskTypeIcon :type="task.type || 'Task'" class="h-3.5 w-3.5 flex-shrink-0" />
-            <span :class="taskTypeMeta[task.type || 'Task']?.color || 'text-slate-300'">
+            <!-- <span :class="taskTypeMeta[task.type || 'Task']?.color || 'text-slate-300'">
               {{ task.type || 'Task' }}
-            </span>
+            </span> -->
           </span>
           <span
             class="text-2xs font-semibold text-slate-500 tracking-wider group-hover:text-slate-400 transition-colors"
@@ -48,7 +52,11 @@
           title="Unassigned"
         >
           <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+            <path
+              fill-rule="evenodd"
+              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+              clip-rule="evenodd"
+            />
           </svg>
         </div>
       </div>
@@ -70,7 +78,9 @@
       </div>
 
       <!-- Card Footer: Created By & Due Date -->
-      <div class="mt-3.5 pt-2.5 border-t border-slate-900/60 flex items-center justify-between gap-2 text-2xs">
+      <div
+        class="mt-3.5 pt-2.5 border-t border-slate-900/60 flex items-center justify-between gap-2 text-2xs"
+      >
         <!-- Left Side: Created By -->
         <div class="flex items-center gap-1.5">
           <div
@@ -81,7 +91,10 @@
             {{ task.reporter?.initial || 'S' }}
           </div>
           <span class="text-slate-500 font-medium">
-            By <span class="text-slate-350 hover:text-white transition-colors">{{ task.reporter?.name || 'System' }}</span>
+            By
+            <span class="text-slate-350 hover:text-white transition-colors">{{
+              task.reporter?.name || 'System'
+            }}</span>
           </span>
         </div>
 

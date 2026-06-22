@@ -152,6 +152,47 @@
               class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all [color-scheme:dark]"
             />
           </div>
+
+          <div>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Tags</label>
+            <div class="mt-1.5 flex flex-col gap-2">
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  v-model="newTag"
+                  @keydown.enter.prevent="addTag"
+                  placeholder="Press Enter to add tag"
+                  class="w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
+                />
+                <button
+                  type="button"
+                  @click="addTag"
+                  class="rounded-xl bg-slate-900 border border-slate-850 px-3 py-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all cursor-pointer flex-shrink-0"
+                >
+                  Add
+                </button>
+              </div>
+              
+              <!-- Tag Pills -->
+              <div class="flex flex-wrap gap-1.5 mt-1">
+                <span
+                  v-for="tag in tags"
+                  :key="tag"
+                  class="inline-flex items-center gap-1 rounded-md border border-slate-800 bg-slate-900/30 px-2 py-0.5 text-[11px] text-slate-250 font-medium"
+                >
+                  {{ tag }}
+                  <button
+                    type="button"
+                    @click="removeTag(tag)"
+                    class="hover:text-red-400 text-[10px] font-bold cursor-pointer transition-colors px-0.5"
+                  >
+                    ×
+                  </button>
+                </span>
+                <span v-if="tags.length === 0" class="text-3xs text-slate-600 italic">No tags added yet</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -244,6 +285,20 @@ const reporterId = ref(
     : null,
 )
 const tags = ref(props.task?.tags ? [...props.task.tags] : [])
+const newTag = ref('')
+
+function addTag() {
+  const trimmed = newTag.value.trim()
+  if (trimmed && !tags.value.includes(trimmed)) {
+    tags.value.push(trimmed)
+  }
+  newTag.value = ''
+}
+
+function removeTag(tagToRemove) {
+  tags.value = tags.value.filter((tag) => tag !== tagToRemove)
+}
+
 const dueDate = ref(
   props.task?.due_date ? dayjs(props.task.due_date).format('YYYY-MM-DD') : ''
 )
