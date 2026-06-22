@@ -38,22 +38,38 @@
 
       <div class="space-y-6 p-6 overflow-y-auto flex-grow">
         <div class="grid grid-cols-1 md:grid-cols-[1.7fr_1fr] gap-8 items-start">
-          
           <!-- Left Column: Description -->
           <div class="space-y-4 pr-2">
-            <h3 class="text-[10px] uppercase tracking-[0.2em] text-slate-550 font-semibold">Description</h3>
-            <p v-if="task.description" class="text-base leading-relaxed text-slate-300 whitespace-pre-wrap font-normal">{{ task.description }}</p>
-            <p v-else class="text-sm text-slate-600 italic font-normal">No description provided for this task.</p>
+            <h3 class="text-[10px] uppercase tracking-[0.2em] text-slate-550 font-semibold">
+              Description
+            </h3>
+            <p
+              v-if="task.description"
+              class="text-base leading-relaxed text-slate-300 whitespace-pre-wrap font-normal"
+            >
+              {{ task.description }}
+            </p>
+            <p v-else class="text-sm text-slate-600 italic font-normal">
+              No description provided for this task.
+            </p>
           </div>
 
           <!-- Right Column: Sidebar (Minimal Attributes List) -->
-          <div class="rounded-2xl border border-slate-800 bg-slate-900/25 backdrop-blur-md p-6 space-y-5">
-            <h3 class="text-2xs font-bold uppercase tracking-wider text-slate-400 pb-2 border-b border-slate-800/60">Attributes</h3>
-            
+          <div
+            class="rounded-2xl border border-slate-800 bg-slate-900/25 backdrop-blur-md p-6 space-y-5"
+          >
+            <h3
+              class="text-2xs font-bold uppercase tracking-wider text-slate-400 pb-2 border-b border-slate-800/60"
+            >
+              Attributes
+            </h3>
+
             <div class="space-y-4 text-xs font-normal text-slate-300">
               <!-- Project Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
-                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Project</span>
+                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+                  >Project</span
+                >
                 <span class="text-slate-200 font-medium flex items-center gap-1.5">
                   <span class="h-1.5 w-1.5 rounded-full bg-indigo-500"></span>
                   {{ project.name }}
@@ -62,15 +78,21 @@
 
               <!-- Status Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
-                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Status</span>
-                <span class="rounded-lg bg-slate-950 px-2.5 py-1 text-xs text-slate-300 border border-slate-850">
+                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+                  >Status</span
+                >
+                <span
+                  class="rounded-lg bg-slate-950 px-2.5 py-1 text-xs text-slate-300 border border-slate-850"
+                >
                   {{ task.status }}
                 </span>
               </div>
 
               <!-- Priority Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
-                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Priority</span>
+                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+                  >Priority</span
+                >
                 <span class="flex items-center gap-1.5 text-slate-300 font-medium">
                   <span>{{ priorityMeta[task.priority]?.icon || '⚡' }}</span>
                   {{ task.priority }}
@@ -79,25 +101,34 @@
 
               <!-- Due Date Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
-                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Due Date</span>
-                <span class="flex items-center gap-1.5 text-slate-300 font-medium">
+                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+                  >Due Date</span
+                >
+                <span class="flex items-center gap-1.5 font-medium" :class="dueClass">
                   <span>📅</span>
-                  {{ formattedDueDate }}
+                  {{ dueText }}
                 </span>
               </div>
 
               <!-- Assignee Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
-                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Assignee</span>
+                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+                  >Assignee</span
+                >
                 <span class="flex items-center gap-2 text-slate-200 font-medium">
-                  <span class="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white uppercase">{{ task.assignee?.initial || 'U' }}</span>
+                  <span
+                    class="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white uppercase"
+                    >{{ task.assignee?.initial || 'U' }}</span
+                  >
                   {{ task.assignee?.name || 'Unassigned' }}
                 </span>
               </div>
 
               <!-- Type Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
-                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Type</span>
+                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+                  >Type</span
+                >
                 <span class="flex items-center gap-1.5 text-slate-300 font-medium">
                   <component :is="typeIconMap[task.type || 'Task']" class="h-4 w-4" />
                   {{ task.type || 'Task' }}
@@ -106,7 +137,10 @@
 
               <!-- Tags Row -->
               <div class="flex items-start justify-between py-1">
-                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 mt-1">Tags</span>
+                <span
+                  class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 mt-1"
+                  >Tags</span
+                >
                 <div class="flex flex-wrap gap-1.5 justify-end max-w-[65%]">
                   <span
                     v-for="tag in task.tags"
@@ -115,12 +149,15 @@
                   >
                     {{ tag }}
                   </span>
-                  <span v-if="!task.tags || task.tags.length === 0" class="text-xs text-slate-600 italic">No tags</span>
+                  <span
+                    v-if="!task.tags || task.tags.length === 0"
+                    class="text-xs text-slate-600 italic"
+                    >No tags</span
+                  >
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -156,9 +193,34 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 const router = useRouter()
 
-const formattedDueDate = computed(() => {
+const dueStatus = computed(() => {
+  if (!props.task.due_date) return null
+  const due = dayjs(props.task.due_date).startOf('day')
+  const today = dayjs().startOf('day')
+  const tomorrow = dayjs().add(1, 'day').startOf('day')
+
+  if (due.isBefore(today)) return 'overdue'
+  if (due.isSame(today) || due.isSame(tomorrow)) return 'imminent'
+  return 'upcoming'
+})
+
+const dueClass = computed(() => {
+  if (props.task.status === 'Done') return 'text-slate-300'
+  if (!dueStatus.value) return 'text-slate-300'
+  if (dueStatus.value === 'overdue') return 'text-rose-400 font-semibold'
+  if (dueStatus.value === 'imminent') return 'text-amber-400 font-semibold'
+  return 'text-slate-300'
+})
+
+const dueText = computed(() => {
   if (!props.task.due_date) return 'No due date'
-  return dayjs(props.task.due_date).format('YYYY-MM-DD')
+  const dateStr = dayjs(props.task.due_date).format('YYYY-MM-DD')
+  if (props.task.status === 'Done') return dateStr
+  if (dueStatus.value === 'overdue') return `${dateStr}`
+  if (dueStatus.value === 'imminent') {
+    return `${dateStr}`
+  }
+  return dateStr
 })
 
 const project = computed(
