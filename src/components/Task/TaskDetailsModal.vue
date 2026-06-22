@@ -9,29 +9,49 @@
         class="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-6 py-3.5 flex-shrink-0"
       >
         <div class="flex items-center gap-3">
-          <component :is="typeIconMap[task.type || 'Task']" class="h-5 w-5 flex-shrink-0" />
+          <TaskTypeIcon :type="task.type || 'Task'" class="h-5 w-5 flex-shrink-0" />
           <div>
-            <h2 class="text-base font-bold text-white leading-tight">{{ task.title }}</h2>
             <p class="text-3xs text-slate-450 uppercase tracking-wider mt-0.5">
-              {{ task.id }} &nbsp;•&nbsp; {{ task.type || 'Task' }}
+              {{ task.id }} &nbsp;
             </p>
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <button
             type="button"
-            class="rounded-xl border border-slate-800 bg-slate-900 px-3.5 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all cursor-pointer"
+            class="rounded-xl border border-slate-800 bg-slate-900 px-3.5 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all cursor-pointer flex items-center gap-1.5"
             @click="openEditPage"
+            title="Edit task"
           >
-            Edit
+            <EditIcon class="h-4 w-4" />
+            <span>Edit</span>
           </button>
           <button
             type="button"
-            class="rounded-xl bg-indigo-600 hover:bg-indigo-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-all cursor-pointer animate-pulse"
-            @click="close"
+            class="rounded-xl bg-rose-600 hover:bg-rose-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-all cursor-pointer flex items-center gap-1.5"
+            @click="handleDelete"
+            title="Delete task"
           >
-            Close
+            <DeleteIcon class="h-4 w-4" />
+            <span>Delete</span>
+          </button>
+          <!-- Cross Close Icon Button -->
+          <button
+            type="button"
+            @click="close"
+            class="rounded-xl text-slate-400 hover:text-white hover:bg-slate-850 p-1.5 transition-all cursor-pointer ml-1"
+            title="Close"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
       </div>
@@ -40,30 +60,30 @@
         <div class="grid grid-cols-1 md:grid-cols-[1.7fr_1fr] gap-8 items-start">
           <!-- Left Column: Description -->
           <div class="space-y-4 pr-2">
-            <h3 class="text-[10px] uppercase tracking-[0.2em] text-slate-550 font-semibold">
-              Description
-            </h3>
+            <h3 class="text-[12px] uppercase tracking-[0.2em]">Title</h3>
+
+            <p
+              v-if="task.title"
+              class="whitespace-pre-wrap text-sm text-slate-600 italic font-normal"
+            >
+              {{ task.title }}
+            </p>
+            <p v-else class="text-sm font-normal">-</p>
+
+            <h3 class="text-[12px] uppercase tracking-[0.2em]">Description</h3>
             <p
               v-if="task.description"
-              class="text-base leading-relaxed text-slate-300 whitespace-pre-wrap font-normal"
+              class="whitespace-pre-wrap text-sm text-slate-600 italic font-normal"
             >
               {{ task.description }}
             </p>
-            <p v-else class="text-sm text-slate-600 italic font-normal">
-              No description provided for this task.
-            </p>
+            <p v-else class="text-sm text-slate-600 italic font-normal">N/A</p>
           </div>
 
           <!-- Right Column: Sidebar (Minimal Attributes List) -->
           <div
             class="rounded-2xl border border-slate-800 bg-slate-900/25 backdrop-blur-md p-6 space-y-5"
           >
-            <h3
-              class="text-2xs font-bold uppercase tracking-wider text-slate-400 pb-2 border-b border-slate-800/60"
-            >
-              Attributes
-            </h3>
-
             <div class="space-y-4 text-xs font-normal text-slate-300">
               <!-- Project Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
@@ -73,6 +93,17 @@
                 <span class="text-slate-200 font-medium flex items-center gap-1.5">
                   <span class="h-1.5 w-1.5 rounded-full bg-indigo-500"></span>
                   {{ project.name }}
+                </span>
+              </div>
+
+              <!-- Type Row -->
+              <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
+                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+                  >Type</span
+                >
+                <span class="flex items-center gap-1.5 text-slate-300 font-medium">
+                  <TaskTypeIcon :type="task.type || 'Task'" class="h-4 w-4" />
+                  {{ task.type || 'Task' }}
                 </span>
               </div>
 
@@ -105,8 +136,7 @@
                   >Due Date</span
                 >
                 <span class="flex items-center gap-1.5 font-medium" :class="dueClass">
-                  <span>📅</span>
-                  {{ dueText }}
+                  {{ task.due_date ? dayjs(task.due_date).format('YYYY-MM-DD') : 'N/A' }}
                 </span>
               </div>
 
@@ -124,14 +154,18 @@
                 </span>
               </div>
 
-              <!-- Type Row -->
+              <!-- Created By Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
                 <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
-                  >Type</span
+                  >Created By</span
                 >
-                <span class="flex items-center gap-1.5 text-slate-300 font-medium">
-                  <component :is="typeIconMap[task.type || 'Task']" class="h-4 w-4" />
-                  {{ task.type || 'Task' }}
+                <span class="flex items-center gap-2 text-slate-200 font-medium">
+                  <span
+                    class="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br text-[10px] font-bold text-white uppercase ring-1 ring-slate-800"
+                    :class="task.reporter?.color || 'from-slate-700 to-slate-850'"
+                    >{{ task.reporter?.initial || 'S' }}</span
+                  >
+                  {{ task.reporter?.name || 'System' }}
                 </span>
               </div>
 
@@ -152,7 +186,7 @@
                   <span
                     v-if="!task.tags || task.tags.length === 0"
                     class="text-xs text-slate-600 italic"
-                    >No tags</span
+                    >N/A</span
                   >
                 </div>
               </div>
@@ -161,25 +195,30 @@
         </div>
       </div>
     </div>
+
+    <!-- Reusable Global Confirm Modal -->
+    <BaseConfirmModal
+      v-if="showDeleteConfirm"
+      title="Delete Task"
+      message="Are you sure you want to delete this task? This action cannot be undone."
+      confirm-label="Delete"
+      cancel-label="Cancel"
+      type="danger"
+      @confirm="confirmDelete"
+      @cancel="showDeleteConfirm = false"
+    />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { priorityMeta } from '../../data/statuses.js'
 import dayjs from 'dayjs'
-import TaskIcon from '../icons/TaskIcon.vue'
-import BugIcon from '../icons/BugIcon.vue'
-import FeatureIcon from '../icons/FeatureIcon.vue'
-import ImprovementIcon from '../icons/ImprovementIcon.vue'
-
-const typeIconMap = {
-  Task: TaskIcon,
-  Bug: BugIcon,
-  Feature: FeatureIcon,
-  Improvement: ImprovementIcon,
-}
+import TaskTypeIcon from '../icons/TaskTypeIcon.vue'
+import { useTasks } from '../../composables/useTasks.js'
+import EditIcon from '../icons/EditIcon.vue'
+import DeleteIcon from '../icons/DeleteIcon.vue'
 
 const props = defineProps({
   task: { type: Object, required: true },
@@ -206,6 +245,7 @@ const dueStatus = computed(() => {
 
 const dueClass = computed(() => {
   if (props.task.status === 'Done') return 'text-slate-300'
+  // if (!props.task.status) return 'text-slate-300'
   if (!dueStatus.value) return 'text-slate-300'
   if (dueStatus.value === 'overdue') return 'text-rose-400 font-semibold'
   if (dueStatus.value === 'imminent') return 'text-amber-400 font-semibold'
@@ -231,6 +271,8 @@ const project = computed(
     },
 )
 
+const { deleteTask } = useTasks()
+
 function close() {
   emit('close')
 }
@@ -238,5 +280,17 @@ function close() {
 function openEditPage() {
   emit('close')
   router.push({ name: 'task-edit', params: { id: props.task.id } })
+}
+
+const showDeleteConfirm = ref(false)
+
+function handleDelete() {
+  showDeleteConfirm.value = true
+}
+
+function confirmDelete() {
+  deleteTask(props.task.id)
+  showDeleteConfirm.value = false
+  emit('close')
 }
 </script>

@@ -1,13 +1,12 @@
 <template>
-  <form
-    @submit.prevent="submit"
-    class="space-y-8"
-  >
+  <form @submit.prevent="submit" class="space-y-8">
     <div class="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-8 items-start">
       <!-- Left Column: Primary Content -->
       <div class="space-y-6">
         <div>
-          <label class="text-[10px] uppercase tracking-[0.2em] text-slate-450 font-semibold">Title</label>
+          <label class="text-[10px] uppercase tracking-[0.2em] text-slate-450 font-semibold"
+            >Title</label
+          >
           <input
             v-model="title"
             required
@@ -21,7 +20,9 @@
         </div>
 
         <div>
-          <label class="text-[10px] uppercase tracking-[0.2em] text-slate-450 font-semibold">Description</label>
+          <label class="text-[10px] uppercase tracking-[0.2em] text-slate-450 font-semibold"
+            >Description</label
+          >
           <textarea
             v-model="description"
             rows="12"
@@ -32,12 +33,14 @@
       </div>
 
       <!-- Right Column: Sidebar (Glassmorphism card) -->
-      <div class="rounded-2xl border border-slate-800 bg-slate-900/25 backdrop-blur-md p-6 space-y-6">
-        <h3 class="text-2xs font-bold uppercase tracking-wider text-slate-400 pb-2 border-b border-slate-800/60">Attributes</h3>
-        
-        <div class="space-y-4">
+      <div
+        class="rounded-2xl border border-slate-800 bg-slate-900/25 backdrop-blur-md p-4 space-y-2"
+      >
+        <div class="space-y-1">
           <div>
-            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Project</label>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+              >Project</label
+            >
             <select
               v-model.number="projectId"
               class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
@@ -49,7 +52,9 @@
           </div>
 
           <div>
-            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Issue type</label>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+              >Issue type</label
+            >
             <div class="relative mt-1.5" ref="typeDropdownRef">
               <button
                 type="button"
@@ -57,7 +62,7 @@
                 class="w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all flex items-center justify-between cursor-pointer"
               >
                 <div class="flex items-center gap-2">
-                  <component :is="typeIconMap[taskType]" class="h-4 w-4 flex-shrink-0" />
+                  <TaskTypeIcon :type="taskType" class="h-4 w-4 flex-shrink-0" />
                   <span>{{ taskType }}</span>
                 </div>
                 <svg
@@ -67,7 +72,12 @@
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
 
@@ -83,7 +93,7 @@
                   :class="{ 'bg-slate-900 text-white font-semibold': taskType === t }"
                 >
                   <div class="flex items-center gap-2">
-                    <component :is="typeIconMap[t]" class="h-4 w-4 flex-shrink-0" />
+                    <TaskTypeIcon :type="t" class="h-4 w-4 flex-shrink-0" />
                     <span>{{ t }}</span>
                   </div>
                   <svg
@@ -93,7 +103,12 @@
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                 </div>
               </div>
@@ -101,7 +116,9 @@
           </div>
 
           <div>
-            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Reporter</label>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+              >Reporter</label
+            >
             <select
               v-model.number="reporterId"
               class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
@@ -112,7 +129,9 @@
           </div>
 
           <div>
-            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Assignee</label>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+              >Assignee</label
+            >
             <select
               v-model.number="assigneeId"
               class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
@@ -123,7 +142,9 @@
           </div>
 
           <div>
-            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Status</label>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+              >Status</label
+            >
             <select
               v-model="status"
               class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
@@ -133,7 +154,9 @@
           </div>
 
           <div>
-            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Priority</label>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+              >Priority</label
+            >
             <select
               v-model="priority"
               class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
@@ -145,29 +168,76 @@
           </div>
 
           <div>
-            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Due date</label>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+              >Due date</label
+            >
             <input
               type="date"
               v-model="dueDate"
               class="mt-1.5 w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all [color-scheme:dark]"
             />
           </div>
+
+          <div>
+            <label class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
+              >Tags</label
+            >
+            <div class="mt-1.5 flex flex-col gap-2">
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  v-model="newTag"
+                  @keydown.enter.prevent="addTag"
+                  placeholder="Press Enter to add tag"
+                  class="w-full rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs text-slate-200 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
+                />
+                <button
+                  type="button"
+                  @click="addTag"
+                  class="rounded-xl bg-slate-900 border border-slate-850 px-3 py-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all cursor-pointer flex-shrink-0"
+                >
+                  Add
+                </button>
+              </div>
+
+              <!-- Tag Pills -->
+              <div class="flex flex-wrap gap-1.5 mt-1">
+                <span
+                  v-for="tag in tags"
+                  :key="tag"
+                  class="inline-flex items-center gap-1 rounded-md border border-slate-800 bg-slate-900/30 px-2 py-0.5 text-[11px] text-slate-250 font-medium"
+                >
+                  {{ tag }}
+                  <button
+                    type="button"
+                    @click="removeTag(tag)"
+                    class="hover:text-red-400 text-[10px] font-bold cursor-pointer transition-colors px-0.5"
+                  >
+                    ×
+                  </button>
+                </span>
+                <span v-if="tags.length === 0" class="text-3xs text-slate-600 italic"
+                  >No tags added yet</span
+                >
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Actions Footer -->
-    <div class="flex flex-col gap-3 sm:flex-row sm:justify-end pt-6 border-t border-slate-900/60">
+    <div class="flex flex-col gap-3 sm:flex-row sm:justify-end pt-2 border-t border-slate-900/60">
       <button
         type="button"
-        class="rounded-xl border border-slate-800 bg-transparent px-5 py-2.5 text-xs font-medium text-slate-400 hover:bg-slate-900 hover:text-white transition-all cursor-pointer"
+        class="rounded-xl border border-slate-800 bg-transparent px-5 py-2 text-xs font-medium text-slate-400 hover:bg-slate-900 hover:text-white transition-all cursor-pointer"
         @click="close"
       >
         Cancel
       </button>
       <button
         type="submit"
-        class="rounded-xl bg-indigo-600 hover:bg-indigo-500 px-5 py-2.5 text-xs font-medium text-white shadow-md shadow-indigo-600/10 transition-all cursor-pointer"
+        class="rounded-xl bg-indigo-600 hover:bg-indigo-500 px-5 py-2 text-xs font-medium text-white shadow-md shadow-indigo-600/10 transition-all cursor-pointer"
       >
         {{ submitButtonLabel }}
       </button>
@@ -177,21 +247,15 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { statuses as defaultStatuses, taskTypes as defaultTaskTypes, priorityMeta } from '../../data/statuses.js'
+import {
+  statuses as defaultStatuses,
+  taskTypes as defaultTaskTypes,
+  priorityMeta,
+} from '../../data/statuses.js'
 import useVuelidate from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
-import TaskIcon from '../icons/TaskIcon.vue'
-import BugIcon from '../icons/BugIcon.vue'
-import FeatureIcon from '../icons/FeatureIcon.vue'
-import ImprovementIcon from '../icons/ImprovementIcon.vue'
-
-const typeIconMap = {
-  Task: TaskIcon,
-  Bug: BugIcon,
-  Feature: FeatureIcon,
-  Improvement: ImprovementIcon,
-}
+import TaskTypeIcon from '../icons/TaskTypeIcon.vue'
 
 const isTypeDropdownOpen = ref(false)
 const typeDropdownRef = ref(null)
@@ -254,9 +318,21 @@ const reporterId = ref(
     : null,
 )
 const tags = ref(props.task?.tags ? [...props.task.tags] : [])
-const dueDate = ref(
-  props.task?.due_date ? dayjs(props.task.due_date).format('YYYY-MM-DD') : ''
-)
+const newTag = ref('')
+
+function addTag() {
+  const trimmed = newTag.value.trim()
+  if (trimmed && !tags.value.includes(trimmed)) {
+    tags.value.push(trimmed)
+  }
+  newTag.value = ''
+}
+
+function removeTag(tagToRemove) {
+  tags.value = tags.value.filter((tag) => tag !== tagToRemove)
+}
+
+const dueDate = ref(props.task?.due_date ? dayjs(props.task.due_date).format('YYYY-MM-DD') : '')
 
 const statuses = computed(() => props.statuses)
 const isEdit = computed(() => !!props.task)
