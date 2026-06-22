@@ -252,17 +252,6 @@ const dueClass = computed(() => {
   return 'text-slate-300'
 })
 
-const dueText = computed(() => {
-  if (!props.task.due_date) return 'No due date'
-  const dateStr = dayjs(props.task.due_date).format('YYYY-MM-DD')
-  if (props.task.status === 'Done') return dateStr
-  if (dueStatus.value === 'overdue') return `${dateStr}`
-  if (dueStatus.value === 'imminent') {
-    return `${dateStr}`
-  }
-  return dateStr
-})
-
 const project = computed(
   () =>
     props.projects.find((projectItem) => projectItem.id === props.task.projectId) || {
