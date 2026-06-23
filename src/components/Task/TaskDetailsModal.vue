@@ -64,7 +64,7 @@
 
             <p
               v-if="task.title"
-              class="whitespace-pre-wrap text-sm text-slate-600 italic font-normal"
+              class="whitespace-pre-wrap text-sm text-slate-500 italic font-normal"
             >
               {{ task.title }}
             </p>
@@ -73,11 +73,11 @@
             <h3 class="text-[12px] uppercase tracking-[0.2em]">Description</h3>
             <p
               v-if="task.description"
-              class="whitespace-pre-wrap text-sm text-slate-600 italic font-normal"
+              class="whitespace-pre-wrap text-sm text-slate-500 italic font-normal"
             >
               {{ task.description }}
             </p>
-            <p v-else class="text-sm text-slate-600 italic font-normal">N/A</p>
+            <p v-else class="text-sm text-slate-500 italic font-normal">N/A</p>
           </div>
 
           <!-- Right Column: Sidebar (Minimal Attributes List) -->

@@ -35,9 +35,18 @@
 
         <router-link
           to="/tasks/create"
-          class="rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-slate-900"
+          class="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/15 hover:from-indigo-500 hover:to-violet-500 hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-[1px] cursor-pointer select-none"
         >
-          + Create task
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Create task</span>
         </router-link>
       </div>
     </div>
@@ -135,7 +144,7 @@
         </thead>
         <tbody class="divide-y divide-slate-900/60">
           <tr
-            v-for="task in filteredTasks"
+            v-for="task in paginatedTasks"
             :key="task.id"
             @click="openDetails(task)"
             class="group hover:bg-slate-900/30 transition-all duration-200 cursor-pointer"
@@ -223,11 +232,85 @@
       @close="closeDetailsModal"
       @update="handleUpdateTask"
     />
+
+    <!-- Pagination Footer -->
+    <div
+      v-if="filteredTasks.length > 0"
+      class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between p-4 rounded-2xl border border-slate-900 bg-slate-950/40 select-none"
+    >
+      <!-- Page Size Selector -->
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-slate-500 font-medium">Show</span>
+        <select
+          v-model.number="itemsPerPage"
+          class="rounded-lg border border-slate-850 bg-slate-950 px-2 py-1 text-xs font-semibold text-slate-350 focus:border-indigo-500 focus:outline-none transition-all [color-scheme:dark] cursor-pointer"
+        >
+          <option :value="10">10</option>
+          <option :value="25">25</option>
+          <option :value="50">50</option>
+        </select>
+        <span class="text-xs text-slate-500 font-medium">tasks per page</span>
+      </div>
+
+      <!-- Stats -->
+      <div class="text-xs text-slate-400 font-medium">
+        Showing
+        <span class="font-semibold text-slate-200">{{ startIndex + 1 }}</span>
+        to
+        <span class="font-semibold text-slate-200">{{ endIndex }}</span>
+        of
+        <span class="font-semibold text-slate-200">{{ totalItems }}</span>
+        tasks
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center gap-1.5 self-end sm:self-auto">
+        <!-- Previous Page Button -->
+        <button
+          @click="prevPage"
+          :disabled="currentPage === 1"
+          type="button"
+          class="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-850 bg-slate-950 text-slate-450 hover:bg-slate-900 hover:text-white disabled:opacity-30 disabled:hover:bg-slate-950 disabled:hover:text-slate-450 transition-all cursor-pointer disabled:cursor-not-allowed"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <!-- Page Numbers -->
+        <button
+          v-for="page in totalPages"
+          :key="'page-' + page"
+          @click="goToPage(page)"
+          type="button"
+          class="flex h-8 w-8 items-center justify-center rounded-lg border text-xs font-bold transition-all cursor-pointer"
+          :class="
+            currentPage === page
+              ? 'bg-indigo-600 border-indigo-500 text-white shadow shadow-indigo-600/10'
+              : 'border-slate-850 bg-slate-950 text-slate-450 hover:bg-slate-900 hover:text-white'
+          "
+        >
+          {{ page }}
+        </button>
+
+        <!-- Next Page Button -->
+        <button
+          @click="nextPage"
+          :disabled="currentPage === totalPages"
+          type="button"
+          class="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-850 bg-slate-950 text-slate-450 hover:bg-slate-900 hover:text-white disabled:opacity-30 disabled:hover:bg-slate-950 disabled:hover:text-slate-450 transition-all cursor-pointer disabled:cursor-not-allowed"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useTasks } from '../../composables/useTasks.js'
 import { statuses, priorityMeta, taskTypes } from '../../data/statuses.js'
 import { projects } from '../../data/projects.js'
@@ -245,6 +328,41 @@ const {
   updateTask,
 } = useTasks()
 const selectedTask = ref(null)
+
+// Pagination logic
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
+
+const totalItems = computed(() => filteredTasks.value.length)
+const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value) || 1)
+
+const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value)
+const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage.value, totalItems.value))
+
+const paginatedTasks = computed(() => {
+  return filteredTasks.value.slice(startIndex.value, endIndex.value)
+})
+
+// Reset current page to 1 when filters change
+watch(filteredTasks, () => {
+  currentPage.value = 1
+})
+
+function prevPage() {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+function nextPage() {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
+
+function goToPage(page) {
+  currentPage.value = page
+}
 
 function openDetails(task) {
   selectedTask.value = task
