@@ -1,11 +1,9 @@
 <template>
   <div class="relative inline-block text-left" ref="selectRef">
-    <!-- Optional Label -->
     <label v-if="label" class="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
       {{ label }}
     </label>
 
-    <!-- Trigger Button -->
     <button
       type="button"
       @click="toggleDropdown"
@@ -21,7 +19,6 @@
           {{ modelValue.length }}
         </span>
       </div>
-      <!-- Chevron Icon -->
       <svg
         class="h-3.5 w-3.5 text-slate-500 transition-transform duration-200"
         :class="{ 'rotate-180 text-indigo-400': isOpen }"
@@ -34,7 +31,6 @@
       </svg>
     </button>
 
-    <!-- Dropdown Menu -->
     <transition
       enter-active-class="transition duration-100 ease-out"
       enter-from-class="transform scale-95 opacity-0 -translate-y-1"
@@ -47,7 +43,6 @@
         v-if="isOpen"
         class="absolute left-0 mt-1.5 z-50 min-w-[200px] max-h-60 overflow-y-auto rounded-xl border border-slate-800 bg-slate-950 p-1.5 shadow-xl backdrop-blur-md"
       >
-        <!-- Options List -->
         <div class="space-y-0.5">
           <div
             v-for="option in parsedOptions"
@@ -56,7 +51,6 @@
             class="flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer text-xs text-slate-350 hover:bg-slate-900 hover:text-white transition-all select-none"
             :class="{ 'bg-slate-900/40 text-white font-medium': isSelected(option.value) }"
           >
-            <!-- Checkbox Custom UI -->
             <div
               class="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded border transition-all"
               :class="
@@ -79,7 +73,6 @@
               </svg>
             </div>
 
-            <!-- Option Avatar / Icon (if provided) -->
             <div
               v-if="option.avatarUrl"
               class="h-5 w-5 rounded-full overflow-hidden flex-shrink-0 bg-slate-850"
@@ -100,7 +93,6 @@
             />
             <span v-else-if="option.icon" class="text-xs flex-shrink-0">{{ option.icon }}</span>
 
-            <!-- Option Label -->
             <span class="truncate">{{ option.label }}</span>
           </div>
         </div>

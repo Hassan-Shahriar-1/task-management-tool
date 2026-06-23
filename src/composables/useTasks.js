@@ -2,6 +2,7 @@ import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { tasks as initialTasks } from '../data/tasks.js'
 import { statuses } from '../data/statuses.js'
+import { users } from '../data/users.js'
 
 const STORAGE_KEY = 'todo.tasks'
 const tasks = ref([])
@@ -80,10 +81,8 @@ const groupedTasks = computed(() => {
   return groups
 })
 
-// Filtered tasks logic
 const filteredTasks = computed(() => {
   return tasks.value.filter((task) => {
-    // 1. Search filter
     if (searchQuery.value) {
       const q = searchQuery.value.toLowerCase().trim()
       const titleMatch = task.title?.toLowerCase().includes(q)
@@ -95,22 +94,28 @@ const filteredTasks = computed(() => {
       }
     }
 
-    // 2. Priority filter
     if (selectedPriorities.value.length > 0) {
       if (!selectedPriorities.value.includes(task.priority)) {
         return false
       }
     }
 
-    // 3. Assignee filter
+    // Assignee filter
     if (selectedAssignees.value.length > 0) {
       const assigneeName = task.assignee?.name || 'Unassigned'
-      if (!selectedAssignees.value.includes(assigneeName)) {
+      let assigneeId = 'Unassigned'
+      if (assigneeName !== 'Unassigned') {
+        const foundUser = users.find((u) => u.name === assigneeName)
+        if (foundUser) {
+          assigneeId = foundUser.id
+        }
+      }
+      if (!selectedAssignees.value.includes(assigneeId)) {
         return false
       }
     }
 
-    // 4. Type filter
+    //  Type filter
     if (selectedTypes.value.length > 0) {
       const type = task.type || 'Task'
       if (!selectedTypes.value.includes(type)) {
@@ -118,7 +123,7 @@ const filteredTasks = computed(() => {
       }
     }
 
-    // 5. Project filter
+    // Project filter
     if (selectedProjects.value.length > 0) {
       if (!selectedProjects.value.includes(task.projectId)) {
         return false
@@ -152,7 +157,7 @@ export function useTasks() {
   const route = useRoute()
 
   if (route && router) {
-    // 1. Sync from route query on startup
+    //  Sync from route query on startup
     const syncFiltersFromRoute = (r) => {
       if (r.query.search !== undefined) {
         searchQuery.value = r.query.search
@@ -161,7 +166,9 @@ export function useTasks() {
         selectedPriorities.value = r.query.priority ? r.query.priority.split(',') : []
       }
       if (r.query.assignee !== undefined) {
-        selectedAssignees.value = r.query.assignee ? r.query.assignee.split(',') : []
+        selectedAssignees.value = r.query.assignee
+          ? r.query.assignee.split(',').map((val) => (val === 'Unassigned' ? 'Unassigned' : (Number(val) || val)))
+          : []
       }
       if (r.query.type !== undefined) {
         selectedTypes.value = r.query.type ? r.query.type.split(',') : []
@@ -184,7 +191,7 @@ export function useTasks() {
       return true
     }
 
-    // 2. Watch filters and update route
+    // Watch filters and update route
     watch(
       [searchQuery, selectedPriorities, selectedAssignees, selectedTypes, selectedProjects],
       () => {
@@ -229,7 +236,7 @@ export function useTasks() {
       { deep: true }
     )
 
-    // 3. Watch route query changes (for back/forward navigation or manual URL edits)
+    //  Watch route query changes (for back/forward navigation or manual URL edits)
     watch(
       () => route.query,
       (newQuery) => {
@@ -243,7 +250,9 @@ export function useTasks() {
           selectedPriorities.value = routePriorities
         }
 
-        const routeAssignees = newQuery.assignee ? newQuery.assignee.split(',') : []
+        const routeAssignees = newQuery.assignee
+          ? newQuery.assignee.split(',').map((val) => (val === 'Unassigned' ? 'Unassigned' : (Number(val) || val)))
+          : []
         if (JSON.stringify(selectedAssignees.value) !== JSON.stringify(routeAssignees)) {
           selectedAssignees.value = routeAssignees
         }
