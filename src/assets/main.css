@@ -14,8 +14,8 @@
   --color-brand-900: #11259e;
   --color-brand-950: #0a145c;
 
-  --font-size-2xs: 0.625rem;
-  --font-size-3xs: 0.5rem;
+  --text-2xs: 0.625rem;
+  --text-3xs: 0.5rem;
 }
 
 @layer base {
