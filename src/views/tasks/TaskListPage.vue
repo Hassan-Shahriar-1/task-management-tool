@@ -42,6 +42,60 @@
       </div>
     </div>
 
+    <!-- Search & Filter Controls -->
+    <div class="flex flex-col mb-6 p-4 rounded-2xl border border-slate-900 bg-slate-950/40 backdrop-blur-md">
+      <!-- Top Row: Search and Toggle Button -->
+      <div class="flex items-center justify-between gap-4 w-full">
+        <TaskSearchBar class="flex-grow max-w-sm" />
+
+        <!-- Filter Toggle Button -->
+        <button
+          @click="isFilterExpanded = !isFilterExpanded"
+          type="button"
+          class="flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold shadow-sm transition-all hover:bg-slate-900 hover:text-white cursor-pointer select-none"
+          :class="isFilterExpanded || hasActiveFilters ? 'border-indigo-500 bg-indigo-600/10 text-indigo-400' : 'border-slate-800 bg-slate-950 text-slate-350 hover:border-slate-700'"
+        >
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+            />
+          </svg>
+          <span>Filters</span>
+          <span
+            v-if="activeFiltersCount > 0"
+            class="flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-indigo-600 px-1 text-[9px] font-bold text-white shadow-sm"
+          >
+            {{ activeFiltersCount }}
+          </span>
+        </button>
+      </div>
+
+      <!-- Collapsible Bottom Row: Filter Options -->
+      <transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="transform scale-y-95 opacity-0 origin-top"
+        enter-to-class="transform scale-y-100 opacity-100 origin-top"
+        leave-active-class="transition duration-150 ease-in"
+        leave-from-class="transform scale-y-100 opacity-100 origin-top"
+        leave-to-class="transform scale-y-95 opacity-0 origin-top"
+      >
+        <div
+          v-show="isFilterExpanded || hasActiveFilters"
+          class="mt-4 pt-4 border-t border-slate-900/60"
+        >
+          <TaskFilter />
+        </div>
+      </transition>
+    </div>
+
     <div class="overflow-x-auto rounded-2xl border border-slate-900 bg-slate-950 shadow-xl">
       <table class="w-full text-left border-collapse">
         <thead>
@@ -56,7 +110,7 @@
         </thead>
         <tbody class="divide-y divide-slate-900/60">
           <tr
-            v-for="task in tasks"
+            v-for="task in filteredTasks"
             :key="task.id"
             @click="openDetails(task)"
             class="group hover:bg-slate-900/30 transition-all duration-200 cursor-pointer"
@@ -91,9 +145,9 @@
                 <div
                   v-if="task.assignee && task.assignee.name !== 'Unassigned'"
                   class="h-6 w-6 rounded-full bg-gradient-to-br flex items-center justify-center text-[10px] font-bold text-white ring-1 ring-slate-800 shadow-sm"
-                  :class="task.assignee.color"
+                  :class="task.assignee?.color"
                 >
-                  {{ task.assignee.initial }}
+                  {{ task.assignee?.initial }}
                 </div>
                 <div
                   v-else
@@ -124,9 +178,9 @@
             </td>
           </tr>
 
-          <tr v-if="tasks.length === 0">
+          <tr v-if="filteredTasks.length === 0">
             <td colspan="6" class="px-6 py-12 text-center text-slate-650 italic text-sm">
-              No tasks found. Create some tasks to populate the table.
+              No tasks found matching current filters.
             </td>
           </tr>
         </tbody>
@@ -157,7 +211,13 @@ import PriorityBadge from '../../components/Task/PriorityBadge.vue'
 import TaskTypeIcon from '../../components/icons/TaskTypeIcon.vue'
 import TaskDetailsModal from '../../components/Task/TaskDetailsModal.vue'
 
-const { tasks, updateTask } = useTasks()
+const {
+  filteredTasks,
+  isFilterExpanded,
+  activeFiltersCount,
+  hasActiveFilters,
+  updateTask,
+} = useTasks()
 const selectedTask = ref(null)
 
 function openDetails(task) {

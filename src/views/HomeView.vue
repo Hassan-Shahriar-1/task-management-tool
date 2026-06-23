@@ -53,6 +53,60 @@
       </div>
     </div>
 
+    <!-- Search & Filter Controls -->
+    <div class="flex flex-col mb-6 p-4 rounded-2xl border border-slate-900 bg-slate-950/40 backdrop-blur-md">
+      <!-- Top Row: Search and Toggle Button -->
+      <div class="flex items-center justify-between gap-4 w-full">
+        <TaskSearchBar class="flex-grow max-w-sm" />
+
+        <!-- Filter Toggle Button -->
+        <button
+          @click="isFilterExpanded = !isFilterExpanded"
+          type="button"
+          class="flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold shadow-sm transition-all hover:bg-slate-900 hover:text-white cursor-pointer select-none"
+          :class="isFilterExpanded || hasActiveFilters ? 'border-indigo-500 bg-indigo-600/10 text-indigo-400' : 'border-slate-800 bg-slate-950 text-slate-350 hover:border-slate-700'"
+        >
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+            />
+          </svg>
+          <span>Filters</span>
+          <span
+            v-if="activeFiltersCount > 0"
+            class="flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-indigo-600 px-1 text-[9px] font-bold text-white shadow-sm"
+          >
+            {{ activeFiltersCount }}
+          </span>
+        </button>
+      </div>
+
+      <!-- Collapsible Bottom Row: Filter Options -->
+      <transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="transform scale-y-95 opacity-0 origin-top"
+        enter-to-class="transform scale-y-100 opacity-100 origin-top"
+        leave-active-class="transition duration-150 ease-in"
+        leave-from-class="transform scale-y-100 opacity-100 origin-top"
+        leave-to-class="transform scale-y-95 opacity-0 origin-top"
+      >
+        <div
+          v-show="isFilterExpanded || hasActiveFilters"
+          class="mt-4 pt-4 border-t border-slate-900/60"
+        >
+          <TaskFilter />
+        </div>
+      </transition>
+    </div>
+
     <!-- KANBAN BOARD CONTAINER -->
     <div class="grid grid-cols-1 gap-5 md:grid-cols-3 items-start">
       <!-- Each Column -->
@@ -70,7 +124,7 @@
             <span
               class="rounded-full bg-slate-900 px-2 py-0.5 text-2xs font-semibold text-slate-500"
             >
-              {{ groupedTasks[col]?.length || 0 }}
+              {{ groupedFilteredTasks[col]?.length || 0 }}
             </span>
           </div>
 
@@ -115,7 +169,7 @@
         <!-- Task Cards Area -->
         <div class="flex flex-col gap-3 min-h-[300px] mt-1">
           <TaskCard
-            v-for="task in groupedTasks[col]"
+            v-for="task in groupedFilteredTasks[col]"
             :key="task.id"
             :task="task"
             @select="openDetails"
@@ -123,7 +177,7 @@
 
           <!-- Empty state indicator per column if zero tasks -->
           <div
-            v-if="!groupedTasks[col] || groupedTasks[col].length === 0"
+            v-if="!groupedFilteredTasks[col] || groupedFilteredTasks[col].length === 0"
             class="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-900/50 py-10 px-4 text-center text-slate-600"
           >
             <svg
@@ -181,7 +235,14 @@ import TaskCard from '../components/Task/TaskCard.vue'
 import CreateTaskModal from '../components/Task/CreateTaskModal.vue'
 import TaskDetailsModal from '../components/Task/TaskDetailsModal.vue'
 
-const { groupedTasks, addTask, updateTask } = useTasks()
+const {
+  groupedFilteredTasks,
+  isFilterExpanded,
+  activeFiltersCount,
+  hasActiveFilters,
+  addTask,
+  updateTask,
+} = useTasks()
 
 const showModal = ref(false)
 const selectedStatus = ref(null)

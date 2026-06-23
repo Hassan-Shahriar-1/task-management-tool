@@ -18,13 +18,18 @@ export const priorityMeta = {
   Low: { bg: 'bg-slate-500/10', text: 'text-slate-400', border: 'border-slate-800', icon: '💤' },
 }
 
-export const taskTypes = ['Task', 'Bug', 'Feature', 'Improvement']
+import TaskIcon from '../components/icons/TaskIcon.vue'
+import BugIcon from '../components/icons/BugIcon.vue'
+import FeatureIcon from '../components/icons/FeatureIcon.vue'
+import ImprovementIcon from '../components/icons/ImprovementIcon.vue'
 
+export const taskTypes = ['Task', 'Bug', 'Feature', 'Improvement']
+  
 export const taskTypeMeta = {
-  Task: { icon: '✓', color: 'text-blue-400', bg: 'bg-blue-500/10' },
-  Bug: { icon: '🐛', color: 'text-rose-400', bg: 'bg-rose-500/10' },
-  Feature: { icon: '⭐', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-  Improvement: { icon: '📈', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+  Task: { icon: TaskIcon, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+  Bug: { icon: BugIcon, color: 'text-rose-400', bg: 'bg-rose-500/10' },
+  Feature: { icon: FeatureIcon, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  Improvement: { icon: ImprovementIcon, color: 'text-amber-400', bg: 'bg-amber-500/10' },
 }
 
 export default { statuses, statusMeta, priorityMeta, taskTypes, taskTypeMeta }
