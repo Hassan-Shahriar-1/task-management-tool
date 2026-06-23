@@ -13,7 +13,7 @@
       <div class="flex items-center justify-between mb-2 gap-3">
         <div class="flex items-center gap-2">
           <span
-            class="rounded-full py-0.5 text-xs font-medium flex items-center gap-1.5"
+            class="rounded-full py-0.5 text-2xs font-medium flex items-center gap-1.5"
             :class="taskTypeMeta[task.type || 'Task']?.bg || 'bg-slate-800'"
           >
             <TaskTypeIcon :type="task.type || 'Task'" class="h-3.5 w-3.5 flex-shrink-0" />
@@ -33,7 +33,7 @@
       <!-- Card Title and Assignee (Jira style - rightmost of title card) -->
       <div class="flex items-start justify-between gap-3 mt-1">
         <h3
-          class="text-sm font-bold text-slate-200 line-clamp-2 leading-snug group-hover:text-white transition-colors flex-grow"
+          class="text-xs font-bold text-slate-200 line-clamp-2 leading-snug group-hover:text-white transition-colors flex-grow"
         >
           {{ task.title }}
         </h3>
@@ -71,7 +71,7 @@
         <span
           v-for="tag in task.tags"
           :key="tag"
-          class="rounded-md border border-slate-900 bg-slate-900/30 px-1.5 py-0.5 text-sm text-slate-200"
+          class="rounded-md border border-slate-900 bg-slate-900/30 px-1.5 py-0.5 text-2xs text-slate-300"
         >
           {{ tag }}
         </span>

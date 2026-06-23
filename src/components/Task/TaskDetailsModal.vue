@@ -64,7 +64,7 @@
 
             <p
               v-if="task.title"
-              class="whitespace-pre-wrap text-sm text-slate-600 italic font-normal"
+              class="whitespace-pre-wrap text-sm text-slate-500 italic font-normal"
             >
               {{ task.title }}
             </p>
@@ -73,19 +73,17 @@
             <h3 class="text-[12px] uppercase tracking-[0.2em]">Description</h3>
             <p
               v-if="task.description"
-              class="whitespace-pre-wrap text-sm text-slate-600 italic font-normal"
+              class="whitespace-pre-wrap text-sm text-slate-500 italic font-normal"
             >
               {{ task.description }}
             </p>
-            <p v-else class="text-sm text-slate-600 italic font-normal">N/A</p>
+            <p v-else class="text-sm text-slate-500 italic font-normal">N/A</p>
           </div>
 
-          <!-- Right Column: Sidebar (Minimal Attributes List) -->
           <div
             class="rounded-2xl border border-slate-800 bg-slate-900/25 backdrop-blur-md p-6 space-y-5"
           >
             <div class="space-y-4 text-xs font-normal text-slate-300">
-              <!-- Project Row -->
               <div class="flex items-center justify-between py-1 border-b border-slate-900/60">
                 <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500"
                   >Project</span
@@ -136,7 +134,7 @@
                   >Due Date</span
                 >
                 <span class="flex items-center gap-1.5 font-medium" :class="dueClass">
-                  {{ task.due_date ? dayjs(task.due_date).format('YYYY-MM-DD') : 'N/A' }}
+                  {{ dueText }}
                 </span>
               </div>
 
@@ -250,6 +248,11 @@ const dueClass = computed(() => {
   if (dueStatus.value === 'overdue') return 'text-rose-400 font-semibold'
   if (dueStatus.value === 'imminent') return 'text-amber-400 font-semibold'
   return 'text-slate-300'
+})
+
+const dueText = computed(() => {
+  if (!props.task.due_date) return 'No due date'
+  return dayjs(props.task.due_date).format('YYYY-MM-DD')
 })
 
 const project = computed(
