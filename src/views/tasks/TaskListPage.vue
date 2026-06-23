@@ -242,7 +242,8 @@
       <div class="flex items-center gap-2">
         <span class="text-xs text-slate-500 font-medium">Show</span>
         <select
-          v-model.number="itemsPerPage"
+          :value="itemsPerPage"
+          @change="onItemsPerPageChange"
           class="rounded-lg border border-slate-850 bg-slate-950 px-2 py-1 text-xs font-semibold text-slate-350 focus:border-indigo-500 focus:outline-none transition-all [color-scheme:dark] cursor-pointer"
         >
           <option :value="10">10</option>
@@ -311,6 +312,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useTasks } from '../../composables/useTasks.js'
 import { statuses, priorityMeta, taskTypes } from '../../data/statuses.js'
 import { projects } from '../../data/projects.js'
@@ -327,11 +329,36 @@ const {
   clearFilters,
   updateTask,
 } = useTasks()
+
 const selectedTask = ref(null)
+const router = useRouter()
+const route = useRoute()
 
 // Pagination logic
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
+
+// Synchronize state with route queries
+watch(
+  () => route.query,
+  (newQuery) => {
+    const queryPage = parseInt(newQuery.page) || 1
+    const queryLimit = parseInt(newQuery.limit) || 10
+    currentPage.value = queryPage
+    itemsPerPage.value = queryLimit
+  },
+  { immediate: true }
+)
+
+function updateRoute(page, limit) {
+  router.push({
+    query: {
+      ...route.query,
+      page: page,
+      limit: limit,
+    },
+  })
+}
 
 const totalItems = computed(() => filteredTasks.value.length)
 const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value) || 1)
@@ -345,23 +372,30 @@ const paginatedTasks = computed(() => {
 
 // Reset current page to 1 when filters change
 watch(filteredTasks, () => {
-  currentPage.value = 1
+  if (currentPage.value !== 1) {
+    updateRoute(1, itemsPerPage.value)
+  }
 })
 
 function prevPage() {
   if (currentPage.value > 1) {
-    currentPage.value--
+    updateRoute(currentPage.value - 1, itemsPerPage.value)
   }
 }
 
 function nextPage() {
   if (currentPage.value < totalPages.value) {
-    currentPage.value++
+    updateRoute(currentPage.value + 1, itemsPerPage.value)
   }
 }
 
 function goToPage(page) {
-  currentPage.value = page
+  updateRoute(page, itemsPerPage.value)
+}
+
+function onItemsPerPageChange(event) {
+  const newLimit = parseInt(event.target.value)
+  updateRoute(1, newLimit)
 }
 
 function openDetails(task) {
