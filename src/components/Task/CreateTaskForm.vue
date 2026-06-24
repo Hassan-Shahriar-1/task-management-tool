@@ -9,13 +9,15 @@
           >
           <input
             v-model="title"
-            required
+            @input="v$.title.$touch"
+            @blur="v$.title.$touch"
             placeholder="Add issue title here"
             class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3.5 text-lg font-semibold text-white placeholder-slate-700 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 transition-all"
           />
           <div v-if="v$.title.$error" class="mt-2 text-2xs text-rose-400">
-            <div v-if="v$.title.required?.$invalid">Summary is required</div>
-            <div v-if="v$.title.minLength?.$invalid">Summary must be at least 3 characters</div>
+            <div v-if="v$.title.required?.$invalid">Title is required</div>
+            <div v-if="v$.title.minLength?.$invalid">Title must be at least 3 characters</div>
+            <div v-if="v$.title.maxLength?.$invalid">Title cannot exceed 100 characters</div>
           </div>
         </div>
 
@@ -25,10 +27,16 @@
           >
           <textarea
             v-model="description"
+            @input="v$.description.$touch"
+            @blur="v$.description.$touch"
             rows="12"
             placeholder="Add issue description here..."
             class="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3.5 text-sm text-slate-350 placeholder-slate-700 border border-slate-850 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 transition-all resize-none leading-relaxed"
           ></textarea>
+          <div v-if="v$.description.$error" class="mt-2 text-2xs text-rose-400">
+            <div v-if="v$.description.minLength?.$invalid">Description must be at least 10 characters</div>
+            <div v-if="v$.description.maxLength?.$invalid">Description cannot exceed 1000 characters</div>
+          </div>
         </div>
       </div>
 
@@ -253,7 +261,7 @@ import {
   priorityMeta,
 } from '../../data/statuses.js'
 import useVuelidate from '@vuelidate/core'
-import { required, minLength } from '@vuelidate/validators'
+import { required, minLength, maxLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import TaskTypeIcon from '../icons/TaskTypeIcon.vue'
 
@@ -368,13 +376,14 @@ watch(
 )
 
 const rules = computed(() => ({
-  title: { required, minLength: minLength(3) },
+  title: { required, minLength: minLength(3), maxLength: maxLength(100) },
+  description: { minLength: minLength(10), maxLength: maxLength(1000) },
   status: { required },
   priority: { required },
   taskType: { required },
 }))
 
-const v$ = useVuelidate(rules, { title, status, priority, taskType })
+const v$ = useVuelidate(rules, { title, description, status, priority, taskType })
 
 watch(
   () => props.projectId,
